@@ -72,6 +72,7 @@ async fn logout<'r>(
     Ok(CookieSetter(
         "".to_string(),
         app.config.esi.url.starts_with("https:"),
+        None,
     ))
 }
 
@@ -218,8 +219,9 @@ async fn callback_get(
     app: &rocket::State<app::Application>,
     code: String,
     state: Option<String>,
-) -> Result<rocket::response::Redirect, Madness> {
-    let character_id = app
+    account_raw: Result<AuthenticatedAccount, AuthenticationError>,
+) -> Result<CookieSetter, Madness> {
+	let character_id = app
         .esi_client
         .process_authorization_code(&code)
         .await?;
@@ -228,6 +230,35 @@ async fn callback_get(
     app.affiliation_service
         .update_character_affiliation(character_id)
         .await?;
+
+if state.as_deref() == Some("alt") {
+        let account = match account_raw {
+            Err(AuthenticationError::MissingCookie) => None,
+            Err(AuthenticationError::InvalidToken) => None,
+            Err(AuthenticationError::DatabaseError(e)) => return Err(e.into()),
+            Ok(acc) => Some(acc),
+        };
+        if let Some(account) = account {
+            if account.id != character_id {
+                sqlx::query!(
+                    "REPLACE INTO alt_character (account_id, alt_id) VALUES (?, ?)",
+                    account.id,
+                    character_id
+                )
+                .execute(app.get_db())
+                .await?;
+                let mut cookie = crate::core::auth::create_cookie(app, account.id, None);
+                cookie.2 = Some("/".to_string());
+                return Ok(cookie);
+            }
+            let mut cookie = crate::core::auth::create_cookie(app, account.id, None);
+            cookie.2 = Some("/".to_string());
+            return Ok(cookie);
+        }
+        let mut cookie = crate::core::auth::create_cookie(app, character_id, None);
+        cookie.2 = Some("/".to_string());
+        return Ok(cookie);
+    }
 
     // Check if this is an SRP setup
     if state.as_deref() == Some("srp_setup") {
@@ -278,12 +309,16 @@ async fn callback_get(
         ).await?;
 
         // Redirect to SRP page
-        return Ok(rocket::response::Redirect::to("/fc/srp"));
+        let mut srp_cookie = crate::core::auth::create_cookie(app, character_id, None);
+        srp_cookie.2 = Some("/fc/srp".to_string());
+        return Ok(srp_cookie);
     }
-
-    // Regular auth flow - redirect to frontend
-    Ok(rocket::response::Redirect::to("http://localhost:3000"))
+    // Regular auth flow - set cookie and redirect to frontend
+    let mut cookie = crate::core::auth::create_cookie(app, character_id, None);
+    cookie.2 = Some("/".to_string());
+    Ok(cookie)
 }
+
 
 pub fn routes() -> Vec<rocket::Route> {
     routes![whoami, logout, login_url, callback, callback_get]

@@ -9,7 +9,7 @@ export function usePageTitle(suffix) {
 }
 
 export function replaceTitle(suffix) {
-  document.title = `TLA: ${suffix}`;
+  document.title = `DtF: ${suffix}`;
 }
 
 export function parseMarkdownTitle(data) {

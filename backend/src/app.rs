@@ -30,6 +30,7 @@ pub fn new(db: Arc<crate::DB>, config: Config) -> Application {
         ),
         sse_client: crate::core::sse::SSEClient::new(
             config.sse.url.clone(),
+            config.sse.public_url.clone(),
             &hex::decode(&config.sse.secret).unwrap(),
         ),
         discord_client: crate::core::discord::DiscordWebhookClient::new(),

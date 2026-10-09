@@ -112,7 +112,12 @@ export function FCMenu() {
           );
         })}
         {authContext && authContext.access["stats-view"] && (
-          <GuideCard slug="stats" name="Statistics" icon={faChartLine} />
+          <CardMargin>
+            <NavLink style={{ textDecoration: "inherit", color: "inherit" }} exact to="/fc/stats">
+              <Card title={<><FontAwesomeIcon fixedWidth icon={faChartLine} /> Statistics</>}>
+              </Card>
+            </NavLink>
+          </CardMargin>
         )}
       </CardArray>
     </>

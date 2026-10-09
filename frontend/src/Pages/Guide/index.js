@@ -3,7 +3,6 @@ import { PageTitle } from "../../Components/Page";
 import styled from "styled-components";
 import { CardMargin } from "../../Components/Card";
 import { usePageTitle } from "../../Util/title";
-import BadgeIcon from "../../Components/Badge";
 import { BadgeData } from "./Badges";
 import { GuideViewer } from "./GuideViewer";
 import { guidePath, useGuides } from "./useGuides";
@@ -88,11 +87,6 @@ export function GuideIndex() {
               to={guidePath(guide)}
             />
           ))}
-        <DivButton title="Badges" subtitle="Showing off u GUD" to="/badges">
-          <BadgeIcon type={"DPS"} height={"30px"} />
-          <BadgeIcon type={"LOGI"} height={"30px"} />
-          <BadgeIcon type={"ALT"} height={"30px"} />
-        </DivButton>
       </GuideArray>
     </>
   );

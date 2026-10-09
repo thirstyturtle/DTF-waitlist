@@ -6,8 +6,8 @@ export { fieldsToJson, parseLocaleJson };
 export const HOME_LOCALE_FIELDS = [
   { key: "welcomeTitle", label: "Welcome heading" },
   { key: "intro", label: "Introduction", multiline: true, hint: "Use <guideLink>text</guideLink>, <discordLink>, <fitsLink>, <bold> for links and emphasis." },
-  { key: "whatIsTlaTitle", label: "What is TLA — heading" },
-  { key: "whatIsTlaBody", label: "What is TLA — text", multiline: true },
+  { key: "whatIsTlaTitle", label: "What is DtF — heading" },
+  { key: "whatIsTlaBody", label: "What is DtF — text", multiline: true },
   { key: "armorShieldTitle", label: "Armor vs shield — heading" },
   { key: "armorShieldBody", label: "Armor vs shield — text", multiline: true },
   { key: "faqTitle", label: "FAQ section heading" },

@@ -1,21 +1,22 @@
 [database]
-url = "mysql://usrname:passwd@localhost/db_name?ssl-mode=disabled"
+url = "mysql://waitlist:YOUR_DB_PASSWORD@db/waitlist?ssl-mode=disabled"
 min_connections = 1
 max_connections = 5
 connect_timeout = 2
 idle_timeout = 60
 
 [app]
-token_secret = "0000000000000000000000000000000000000000000000000000000000000000"
+token_secret = "YOUR_SSE_SECRET_HEX_64_CHARS"
 
 [esi]
-client_id = "EVE Client ID"
-client_secret = "EVE Client Secret"
-url = "http://localhost:3000/auth/cb"
+client_id = "YOUR_ESI_CLIENT_ID"
+client_secret = "YOUR_SSE_SECRET_HEX_64_CHARS"
+url = "https://wl.doomsdaydirective.online/api/auth/cb"
 
 [sse]
-url = "http://localhost:8000"
-secret = "0000000000000000000000000000000000000000000000000000000000000000"
+url = "http://sse:8000"
+public_url = "https://wl.doomsdaydirective.online/sse"
+secret = "YOUR_SSE_SECRET_HEX_64_CHARS"
 
 [fleet_updater]
 enable = true
@@ -37,11 +38,11 @@ interval_seconds = 3600
 api_key = "YOUR_JANICE_API_KEY"
 
 [discord]
-enabled = false
-srp_webhook_url = ""
+enabled = true
+srp_webhook_url = "https://discord.com/api/webhooks/1525153339191459952/TjeiRsBvTqr9ESYQWMvH4QUPy6T7K3Oi8GZeGVD1qOtozrFWAudSSRgkAfrJiVWJ7xzu"
 site_url = ""
 # Optional. Base URL for SRP report links in Discord embeds. If empty, derived from esi.url.
 # Use a full URL with scheme, e.g. http://localhost:3000 or https://waitlist.example.com
-srp_ping_role_id = ""
+srp_ping_role_id = "1467992044013224205"
 
 #FOR SRP TIERS, YOU NEED TO CHANGE IT MANUALLY IN srp.rs and srpCharacterCount.js

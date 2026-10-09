@@ -451,8 +451,15 @@ async fn get_srp_status(
             payment_amount: Some(payment_amount),
             coverage_type: Some(coverage_type),
         }))
+// FC FREE SRP - PAUSED - uncomment to re-enable
+// } else if account.access.contains("waitlist-tag:HQ-FC") {
+//         Ok(Json(SRPStatusResponse {
+//             status: Some("FC - SRP Covered".to_string()),
+//             payment_amount: None,
+//             coverage_type: Some("fc".to_string()),
+//         }))
     } else {
-        Ok(Json(SRPStatusResponse { 
+        Ok(Json(SRPStatusResponse {
             status: Some("Unpaid".to_string()),
             payment_amount: None,
             coverage_type: None,

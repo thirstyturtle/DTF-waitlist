@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../contexts";
-import banner from "./banner.png";
 import styled from "styled-components";
 import { InputGroupAlt, SelectAlt, NavButton, AButtonAlt, NavButtonAlt } from "../Components/Form";
 import { EventNotifier } from "../Components/Event";
@@ -9,14 +8,12 @@ import { ThemeSelect } from "../Components/ThemeSelect";
 import { LanguageSelect } from "../Components/LanguageSelect";
 import { useAppLocaleOverrides } from "../i18n/loadLocaleOverrides";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord, faTeamspeak } from "@fortawesome/free-brands-svg-icons";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faHeadset } from "@fortawesome/free-solid-svg-icons";
 import { NavLinks, MobileNavButton, MobileNav } from "./Navigation";
 import { useTranslation } from "react-i18next";
 
 const Tlaimage = styled.div`
-  background-image: url(${banner});
-  background-size: 100% auto;
-  background-repeat: no-repeat;
   padding 0.5em;
   border-radius: 0 0 20px 20px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
@@ -110,17 +107,15 @@ NavBar.Name = styled.div`
   }
 `;
 
-const Teamspeak = () => {
+const Mumble = () => {
   const authContext = useContext(AuthContext);
 
   return (
     <AButtonAlt
-      title="Join our Teamspeak Server"
-      href={`ts3server://ts.candeez.org${
-        authContext?.current ? `?nickname=${authContext.current.name}` : ""
-      }`}
+      title="Join our Mumble Server"
+      href={`mumble://${authContext?.current ? encodeURIComponent(authContext.current.name) + '@' : ''}mumble.doomsdaydirective.online`}
     >
-      <FontAwesomeIcon icon={faTeamspeak} />
+      <FontAwesomeIcon icon={faHeadset} />
     </AButtonAlt>
   );
 };
@@ -183,8 +178,8 @@ export function Menu({ onChangeCharacter, theme, setTheme, sticker, setSticker }
                   {width < 481 && (
                     <MobileNavButton isOpen={isOpenMobileView} setIsOpen={setOpenMobileView} />
                   )}
-                  <Teamspeak />
-                  <AButtonAlt title="Discord" href="https://discord.gg/MR3nA9BD9K">
+                  <Mumble />
+                  <AButtonAlt title="Discord" href="https://discord.gg/RpyY9jazpp">
                     <FontAwesomeIcon icon={faDiscord} />
                   </AButtonAlt>
                   <LanguageSelect />

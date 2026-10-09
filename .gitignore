@@ -1,3 +1,16 @@
+# Sensitive config
+backend/config.toml
+docker-compose.yml
+
+# Build artifacts
+backend/target/
+backend/sqlite-shrunk.sqlite
+frontend/node_modules/
+frontend/build/
+
+# Logs
+*.log
+
 # Local Python / tooling (do not commit)
 .venv/
 
@@ -9,3 +22,5 @@
 
 # Local secrets (fit-calculator API key, etc.)
 fit-calculator/.secret
+backend/config.toml
+docker-compose.yml

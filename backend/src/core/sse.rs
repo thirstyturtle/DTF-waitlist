@@ -5,6 +5,7 @@ pub struct SSEClient {
     branca: Branca,
     http: reqwest::Client,
     url: String,
+    public_url: String,
 }
 
 #[derive(thiserror::Error, Debug)]
@@ -31,9 +32,10 @@ struct Submission<'a> {
 }
 
 impl SSEClient {
-    pub fn new(url: String, key: &[u8]) -> SSEClient {
+    pub fn new(url: String, public_url: String, key: &[u8]) -> SSEClient {
         SSEClient {
             url,
+            public_url,
             http: reqwest::Client::new(),
             branca: Branca::new(key).unwrap(),
         }
@@ -43,7 +45,7 @@ impl SSEClient {
         let request = SseSubscribe { topics };
         let payload = rmp_serde::to_vec_named(&request).unwrap();
         let token = self.branca.clone().encode(&payload).unwrap();
-        format!("{}/events?token={}", self.url, token)
+        format!("{}/events?token={}", self.public_url, token)
     }
 
     pub async fn submit(&self, events: Vec<Event<'_>>) -> Result<(), SSEError> {

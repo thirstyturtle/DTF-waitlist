@@ -23,7 +23,7 @@ export const ThreeColumn = styled.div`
 
 const introComponents = {
   guideLink: <NavLink to="/guide" />,
-  discordLink: <a href="https://discord.gg/MR3nA9BD9K" />, // eslint-disable-line jsx-a11y/anchor-has-content
+  discordLink: <a href="https://discord.gg/RpyY9jazpp" />, // eslint-disable-line jsx-a11y/anchor-has-content
   fitsLink: <NavLink to="/fits" />,
   bold: <b />,
 };
@@ -62,6 +62,7 @@ export function HomeContent() {
           <CenteredParagraph.Head>{t("faqTitle")}</CenteredParagraph.Head>
           <CenteredParagraph.ParagraphALT>
             <b>{t("faqFitQuestion")}</b> <Trans i18nKey="faqFitAnswer" components={faqAnswerComponents} />
+            <b>{t("faqAmuletQuestion")}</b> {t("faqAmuletAnswer")}
             <b>{t("faqDpsQuestion")}</b> {t("faqDpsAnswer")}
             <b>{t("faqLogiQuestion")}</b> {t("faqLogiAnswer")}
             <b>{t("faqVindiQuestion")}</b>{" "}

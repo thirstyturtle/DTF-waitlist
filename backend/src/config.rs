@@ -24,6 +24,7 @@ pub struct AppConfig {
 #[derive(Deserialize, Clone)]
 pub struct SSEConfig {
     pub url: String,
+    pub public_url: String,
     pub secret: String,
 }
 

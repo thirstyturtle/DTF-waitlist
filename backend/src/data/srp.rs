@@ -5,31 +5,41 @@ use sqlx::Row;
 
 // SRP payment amount mapping
 const DAILY_PAYMENTS: &[(f64, &str)] = &[
-    (20.0, "daily"),   // 20M
-    (35.0, "daily"),   // 35M
-    (45.0, "daily"),   // 45M
-    (50.0, "daily"),   // 50M
-    (55.0, "daily"),   // 55M
-    (60.0, "daily"),   // 60M
-    (65.0, "daily"),   // 65M
-    (70.0, "daily"),   // 70M
-    (75.0, "daily"),   // 75M
-    (80.0, "daily"),   // 80M
+    (20.0, "daily"),   // 1 toon - 20M
+    (35.0, "daily"),   // 2 toons - 35M
+    (45.0, "daily"),   // 3 toons - 45M
+    (50.0, "daily"),   // 4 toons - 50M
+    (55.0, "daily"),   // 5 toons - 55M
+    (60.0, "daily"),   // 6 toons - 60M
+    (65.0, "daily"),   // 7 toons - 65M
+    (70.0, "daily"),   // 8 toons - 70M
+    (75.0, "daily"),   // 9 toons - 75M
+    (80.0, "daily"),   // 10 toons - 80M
+    (85.0, "daily"),   // 11 toons - 85M
+    (90.0, "daily"),   // 12 toons - 90M
+    (95.0, "daily"),   // 13 toons - 95M
 ];
-
 const PER_FOCUS_PAYMENTS: &[(f64, &str)] = &[
-    (125.0, "per_focus"),
-    (225.0, "per_focus"),
-    (295.0, "per_focus"),
-    (330.0, "per_focus"),
-    (365.0, "per_focus"),
-    (400.0, "per_focus"),
-    (435.0, "per_focus"),
-    (470.0, "per_focus"),
-    (505.0, "per_focus"),
-    (540.0, "per_focus"),
-    (600.0, "per_focus"),
-    (680.0, "per_focus"),
+    (100.0, "per_focus"),   // 1 toon
+    (175.0, "per_focus"),   // 2 toons
+    (225.0, "per_focus"),   // 3 toons
+    (250.0, "per_focus"),   // 4 toons
+    (275.0, "per_focus"),   // 5 toons
+    (300.0, "per_focus"),   // 6 toons
+    (325.0, "per_focus"),   // 7 toons
+    (350.0, "per_focus"),   // 8 toons
+    (375.0, "per_focus"),   // 9 toons
+    (400.0, "per_focus"),   // 10 toons
+    (425.0, "per_focus"),   // 11 toons
+    (450.0, "per_focus"),   // 12 toons
+    (475.0, "per_focus"),   // 13 toons
+    (500.0, "per_focus"),   // 14 toons
+    (525.0, "per_focus"),   // 15 toons
+    (550.0, "per_focus"),   // 16 toons
+    (575.0, "per_focus"),   // 17 toons
+    (600.0, "per_focus"),   // 18 toons
+    (625.0, "per_focus"),   // 19 toons
+    (650.0, "per_focus"),   // 20 toons
 ];
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -383,7 +393,7 @@ pub async fn process_srp_payments(app: &crate::app::Application) -> Result<(), M
         return Ok(());
     }
 
-    // println!("DEBUG: Got {} new wallet journal entries", entries.len());
+     //println!("DEBUG: Got {} new wallet journal entries", entries.len());
 
     // Only clear the database if we have new data to process
     // println!("New data found, clearing existing SRP payments from database");

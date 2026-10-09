@@ -153,6 +153,9 @@ impl Builder {
     }
     fn add_cargo_ignore(&mut self) -> Result<(), TypeError> {
         for entry in &self.file.cargo_ignore {
+            let id = TypeDB::id_of(entry);
+            println!("cargo_ignore entry: '{}' -> {:?}", entry, id);
+            self.cargo_ignore.insert(id?);
             self.cargo_ignore.insert(TypeDB::id_of(entry)?);
         }
         Ok(())

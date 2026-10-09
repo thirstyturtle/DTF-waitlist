@@ -13,7 +13,7 @@ members = [
 eve_data_macros = { path = "./eve-data-macros" }
 eve_data_core = { path = "./eve-data-core" }
 
-sqlx = { version = "0.5", features = ["runtime-tokio-rustls", "macros", "chrono", "bigdecimal", "mysql", "json"] }
+sqlx = { version = "0.6", features = ["runtime-tokio-rustls", "macros", "chrono", "bigdecimal", "mysql", "json"] }
 rocket = { version = "0.5.0", features = ["json"] }
 lazy_static = "1"
 chrono = "0.4"
@@ -22,7 +22,7 @@ tokio = { version = "*", features = ["time"] }
 
 serde = "1"
 serde_json = "*"
-rmp-serde = "0.15"
+rmp-serde = "1"
 yaml-merge-keys = { version = "*", features = ["serde_yaml"] }
 serde_yaml = "*"
 toml = "*"

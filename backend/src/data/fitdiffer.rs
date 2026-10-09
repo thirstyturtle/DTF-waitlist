@@ -105,7 +105,9 @@ impl FitDiffer {
     pub fn diff(expect: &Fitting, actual: &Fitting) -> DiffResult {
         let variator = crate::data::variations::get();
         let variator_guard = variator.read().unwrap();
-        let mut modules = Self::section_diff(&expect.modules, &actual.modules, &*variator_guard);
+        let mut expect_modules = expect.modules.clone();
+        expect_modules.retain(|id, _| !&variator_guard.cargo_ignore.contains(id));
+        let mut modules = Self::section_diff(&expect_modules, &actual.modules, &*variator_guard);
         let cargo_changer = crate::data::variations::drug_handling().unwrap_or(BTreeMap::new());
         let mut mexcargo = expect.cargo.clone();
         let amvariations =

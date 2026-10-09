@@ -39,19 +39,23 @@ struct AuthToken {
     window_character_id: Option<i64>,
 }
 
-pub struct CookieSetter(pub String, pub bool);
+pub struct CookieSetter(pub String, pub bool, pub Option<String>);
 impl<'r> rocket::response::Responder<'r, 'static> for CookieSetter {
     fn respond_to(self, _: &'r rocket::request::Request<'_>) -> rocket::response::Result<'static> {
         // XXX: Secure is set via a parameter in CookieSetter, but we can get this from the App
         let mut response = Response::new();
         let mut cookie = format!(
-            "{}={}; Path=/; HttpOnly; SameSite=Strict; Max-Age=2678400",
+            "{}={}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2678400",
             COOKIE_NAME, self.0
         );
         if self.1 {
             cookie += "; Secure";
         }
         response.set_header(Header::new("Set-Cookie", cookie));
+        if let Some(location) = self.2 {
+            response.set_header(Header::new("Location", location));
+            response.set_status(rocket::http::Status::SeeOther);
+        }
         Ok(response)
     }
 }
@@ -86,7 +90,7 @@ pub fn create_cookie(app: &crate::app::Application, account_id: i64, window_char
 
     let payload = rmp_serde::to_vec_named(&token).unwrap();
     let encoded = branca.encode(&payload).unwrap();
-    CookieSetter(encoded, app.config.esi.url.starts_with("https:"))
+    CookieSetter(encoded, app.config.esi.url.starts_with("https:"), None)
 }
 
 #[rocket::async_trait]

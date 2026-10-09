@@ -25,7 +25,8 @@ impl FleetUpdater {
             ),
             sse_client: sse::SSEClient::new(
                 config.sse.url.clone(),
-                &hex::decode(&config.sse.secret).unwrap(),
+                config.sse.public_url.clone(),
+		&hex::decode(&config.sse.secret).unwrap(),
             ),
             db,
             config,

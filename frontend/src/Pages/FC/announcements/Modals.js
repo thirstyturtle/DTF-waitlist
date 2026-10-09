@@ -20,7 +20,7 @@ const Small = styled.div`
 
 const TEMPLATES = {
   "Use in game channel": {
-    content: "Join the TLA Incursions channel to x-up for the fleet.",
+    content: "Join the DtF Incursions channel to x-up for the fleet.",
     alert: false,
   },
   "Gankers in Focus": {

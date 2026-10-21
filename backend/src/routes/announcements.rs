@@ -66,7 +66,7 @@ async fn get_active_announcements(app: &Application) -> Result<Vec<AnnouncementP
     for a in announcements {
         let created_by = sqlx::query_as!(
             Character,
-            "SELECT * FROM `character` WHERE id=?",
+            "SELECT id, name, corporation_id FROM `character` WHERE id=?",
             a.created_by_id
         )
         .fetch_optional(app.get_db())

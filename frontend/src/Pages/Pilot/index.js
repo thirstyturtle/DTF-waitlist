@@ -118,6 +118,9 @@ function PilotDisplay({ authContext }) {
   );
   const [xupHistory] = useApi(`/api/history/xup?character_id=${characterId}`);
   const [skillHistory] = useApi(`/api/history/skills?character_id=${characterId}`);
+  const [approvedAlts, refreshApprovedAlts] = useApi(`/api/pilot/approved_alts?character_id=${characterId}`);
+  const [editingAlts, setEditingAlts] = React.useState(false);
+  const [altCountInput, setAltCountInput] = React.useState('');
   const [notes, refreshNotes] = useApi(
     authContext.access["notes-view"] ? `/api/notes?character_id=${characterId}` : null
   );
@@ -149,6 +152,52 @@ function PilotDisplay({ authContext }) {
             <h1>{basicInfo && basicInfo.name}</h1>
           </div>
           <PilotTags style={{ flexWrap: "flex" }} tags={basicInfo && basicInfo.tags} />
+          <div style={{ marginTop: "8px" }}>
+            <strong>Approved DPS Alts: </strong>
+            {!editingAlts ? (
+              <>
+                <span>{approvedAlts ? approvedAlts.approved_alt_count : 0}</span>
+                {authContext.access["badges-manage"] && (
+                  <button
+                    style={{ marginLeft: "8px", cursor: "pointer" }}
+                    onClick={() => {
+                      setAltCountInput(approvedAlts ? approvedAlts.approved_alt_count : 0);
+                      setEditingAlts(true);
+                    }}
+                  >
+                    Edit
+                  </button>
+                )}
+              </>
+            ) : (
+              <>
+                <input
+                  type="number"
+                  min="0"
+                  value={altCountInput}
+                  onChange={(e) => setAltCountInput(e.target.value)}
+                  style={{ width: "60px", marginLeft: "8px" }}
+                />
+                <button
+                  style={{ marginLeft: "4px", cursor: "pointer" }}
+                  onClick={() => {
+                    errorToaster(toastContext,
+                      apiCall(`/api/pilot/approved_alts?character_id=${characterId}&count=${altCountInput}`, { method: "POST" })
+                        .then(() => { refreshApprovedAlts(); setEditingAlts(false); })
+                    );
+                  }}
+                >
+                  Save
+                </button>
+                <button
+                  style={{ marginLeft: "4px", cursor: "pointer" }}
+                  onClick={() => setEditingAlts(false)}
+                >
+                  Cancel
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </PageMast>
 

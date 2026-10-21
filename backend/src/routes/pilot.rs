@@ -83,10 +83,48 @@ async fn alt_info(
 
     Ok(Json(characters))
 }
+#[get("/api/pilot/approved_alts?<character_id>")]
+async fn get_approved_alts(
+    account: AuthenticatedAccount,
+    character_id: i64,
+    app: &rocket::State<app::Application>,
+) -> Result<Json<serde_json::Value>, Madness> {
+    authorize_character(&app.db, &account, character_id, None).await?;
 
+    let character = sqlx::query!(
+        "SELECT approved_alt_count FROM `character` WHERE id=?",
+        character_id
+    )
+    .fetch_one(app.get_db())
+    .await?;
+
+    Ok(Json(serde_json::json!({ "approved_alt_count": character.approved_alt_count })))
+}
+
+#[post("/api/pilot/approved_alts?<character_id>&<count>")]
+async fn set_approved_alts(
+    account: AuthenticatedAccount,
+    character_id: i64,
+    count: i32,
+    app: &rocket::State<app::Application>,
+) -> Result<Json<serde_json::Value>, Madness> {
+    account.require_access("badges-manage")?;
+
+    sqlx::query!(
+        "UPDATE `character` SET approved_alt_count=? WHERE id=?",
+        count,
+        character_id
+    )
+    .execute(app.get_db())
+    .await?;
+
+    Ok(Json(serde_json::json!({ "approved_alt_count": count })))
+}
 pub fn routes() -> Vec<rocket::Route> {
     routes![
         alt_info,   //  GET     /api/pilot/alts
-        pilot_info  //  GET     /api/pilot/info
+        pilot_info,  //  GET     /api/pilot/info
+        get_approved_alts,
+        set_approved_alts
     ]
 }

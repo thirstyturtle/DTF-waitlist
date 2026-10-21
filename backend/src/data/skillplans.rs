@@ -406,7 +406,7 @@ fn get_tank_plan(level_name: &str) -> Result<Vec<LevelPair>, SkillPlanError> {
     }
 
     // The tank skill order isn't ship-specific so just specify Megathron here
-    create_sorted_plan("Megathron", &reqs)
+    create_sorted_plan("Vindicator", &reqs)
 }
 
 fn get_single_skill(skill_name: &str, level: SkillLevel) -> Result<Vec<LevelPair>, SkillPlanError> {
@@ -415,7 +415,7 @@ fn get_single_skill(skill_name: &str, level: SkillLevel) -> Result<Vec<LevelPair
     reqs.insert((skill_id, level));
 
     // Don't know what ship it is...
-    create_sorted_plan("Megathron", &reqs)
+    create_sorted_plan("Vindicator", &reqs)
 }
 
 pub fn validate_plan(plan: &SkillPlan) -> Result<(), SkillPlanError> {

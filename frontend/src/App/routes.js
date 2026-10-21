@@ -18,6 +18,7 @@ import { Plans } from "../Pages/Skills/Plans";
 import { Search } from "../Pages/FC/Search";
 import { Skills } from "../Pages/Skills/Skills";
 import { Statistics } from "../Pages/FC/Statistics";
+import { FCUptime } from "../Pages/FC/FCUptime";
 import { Waitlist } from "../Pages/Waitlist";
 import { Xup } from "../Pages/Xup";
 import { Home } from "../Pages/Home";
@@ -158,6 +159,9 @@ export function Routes() {
       </Route>
       <Route exact path="/fc/stats">
         <AuthenticatedRoute component={<Statistics />} access="stats-view" />
+      </Route>
+      <Route exact path="/fc/fc-uptime">
+        <AuthenticatedRoute component={<FCUptime />} access="stats-view" />
       </Route>
       <Route exact path="/fc/:guideName">
         <GuideFCRoute />

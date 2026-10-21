@@ -24,3 +24,8 @@ frontend/build/
 fit-calculator/.secret
 backend/config.toml
 docker-compose.yml
+
+# Local SDE downloads / editor backups
+sqlite-latest.sqlite
+*.bak.*
+*.backup.*

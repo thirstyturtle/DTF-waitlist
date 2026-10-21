@@ -415,23 +415,25 @@ async fn get_srp_status(
         }
     }
 
-    // If still no payment, check if this character is a main character and if any alt has SRP
+    // If still no payment, check if this character is a main character and if ANY alt has SRP
     if payment.is_none() {
-        if let Some(alt_relation) = sqlx::query!(
+        let alt_relations = sqlx::query!(
             "SELECT alt_id FROM alt_character WHERE account_id = ?",
             character_id
         )
-        .fetch_optional(app.get_db())
-        .await? {
-            // Get the alt character's name
+        .fetch_all(app.get_db())
+        .await?;
+        for alt_relation in alt_relations {
             if let Some(alt_character) = sqlx::query!(
                 "SELECT name FROM `character` WHERE id = ?",
                 alt_relation.alt_id
             )
             .fetch_optional(app.get_db())
             .await? {
-                // Check if the alt character has SRP
                 payment = check_srp_for_character(app, &alt_character.name, now).await?;
+                if payment.is_some() {
+                    break;
+                }
             }
         }
     }

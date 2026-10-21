@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DTF Banner</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;600&display=swap">
+<style>
+  :root {
+    --bg: #0a0608;
+    --red: #c0161f;
+    --red-bright: #e8222d;
+    --red-glow: rgba(192, 22, 31, 0.45);
+    --red-dim: rgba(192, 22, 31, 0.15);
+    --fg: #e8dde0;
+    --fg-muted: #7a6a6d;
+    --gold-bright: #c49a52;
+    color-scheme: dark;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Rajdhani', 'Arial Narrow', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    overflow-x: hidden;
+  }
+  .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .banner-wrap { position: relative; z-index: 1; width: 100%; max-width: 900px; }
+  .banner {
+    position: relative;
+    background: linear-gradient(135deg, #0f080a 0%, #180c10 40%, #100608 100%);
+    border: 1px solid var(--red);
+    overflow: hidden;
+    padding: clamp(32px, 6vw, 64px) clamp(24px, 5vw, 56px);
+  }
+  .banner::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 40px; height: 40px; background: var(--bg);
+    clip-path: polygon(0 0, 100% 0, 0 100%); z-index: 3;
+  }
+  .banner::after {
+    content: ''; position: absolute; bottom: 0; right: 0;
+    width: 40px; height: 40px; background: var(--bg);
+    clip-path: polygon(100% 0, 100% 100%, 0 100%); z-index: 3;
+  }
+  .banner-glow {
+    position: absolute; inset: 0; pointer-events: none;
+    box-shadow: inset 0 0 60px var(--red-dim), inset 0 0 120px rgba(192,22,31,0.06);
+  }
+  .scan-line {
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--red), var(--red-bright), var(--red), transparent);
+    box-shadow: 0 0 12px var(--red-glow), 0 0 24px var(--red-dim);
+  }
+  .scan-line-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--red), transparent);
+  }
+  .grid-bg {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(192,22,31,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(192,22,31,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.6) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .insignia {
+    position: absolute; right: clamp(16px, 5vw, 48px); top: 50%;
+    transform: translateY(-50%);
+    width: clamp(80px, 14vw, 140px); height: clamp(80px, 14vw, 140px);
+    opacity: 0.18;
+  }
+  .content { position: relative; z-index: 2; max-width: 680px; }
+  .eyebrow {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(10px, 1.5vw, 13px); font-weight: 600;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--red-bright); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::before {
+    content: ''; display: block; width: 20px; height: 1px;
+    background: var(--red-bright); box-shadow: 0 0 6px var(--red-glow); flex-shrink: 0;
+  }
+  .title {
+    font-family: 'Orbitron', 'Courier New', monospace;
+    font-weight: 900; font-size: clamp(36px, 8vw, 80px);
+    line-height: 0.95; letter-spacing: -0.02em; text-transform: uppercase;
+    color: var(--fg); text-shadow: 0 0 40px var(--red-glow), 0 0 80px rgba(192,22,31,0.2);
+    text-wrap: balance; margin-bottom: 6px;
+  }
+  .title .dtf {
+    display: block; color: #fff;
+    text-shadow: 0 0 30px rgba(255,255,255,0.3), 0 0 60px var(--red-glow);
+  }
+  .title .sub {
+    display: block; font-size: 0.42em; font-weight: 700;
+    letter-spacing: 0.12em; color: var(--red-bright);
+    text-shadow: 0 0 20px var(--red-glow); margin-top: 4px;
+  }
+  .tagline {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(13px, 2vw, 17px); font-weight: 400;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--fg-muted); margin-top: 20px; padding-top: 20px;
+    border-top: 1px solid rgba(192,22,31,0.25);
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  }
+  .tagline .divider { width: 3px; height: 3px; background: var(--red); border-radius: 50%; flex-shrink: 0; }
+  .tagline .highlight { color: var(--gold-bright); }
+  .side-bar {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(180deg, transparent, var(--red), var(--red-bright), var(--red), transparent);
+    box-shadow: 0 0 10px var(--red-glow);
+  }
+  .corner-tl, .corner-br { position: absolute; width: 16px; height: 16px; border-color: var(--red-bright); }
+  .corner-tl { top: 8px; left: 8px; border-top: 2px solid; border-left: 2px solid; }
+  .corner-br { bottom: 8px; right: 8px; border-bottom: 2px solid; border-right: 2px solid; }
+</style>
+</head>
+<body>
+<canvas class="stars" id="stars"></canvas>
+<div class="banner-wrap">
+  <div class="banner">
+    <div class="grid-bg"></div>
+    <div class="banner-glow"></div>
+    <div class="scan-line"></div>
+    <div class="scan-line-bottom"></div>
+    <div class="side-bar"></div>
+    <div class="corner-tl"></div>
+    <div class="corner-br"></div>
+    <svg class="insignia" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="90" stroke="#c0161f" stroke-width="1.5"/>
+      <circle cx="100" cy="100" r="75" stroke="#c0161f" stroke-width="0.5" stroke-dasharray="4 6"/>
+      <circle cx="100" cy="100" r="60" stroke="#c0161f" stroke-width="1"/>
+      <circle cx="100" cy="100" r="40" stroke="#c0161f" stroke-width="0.5"/>
+      <line x1="100" y1="10" x2="100" y2="40" stroke="#c0161f" stroke-width="1.5"/>
+      <line x1="100" y1="160" x2="100" y2="190" stroke="#c0161f" stroke-width="1.5"/>
+      <line x1="10" y1="100" x2="40" y2="100" stroke="#c0161f" stroke-width="1.5"/>
+      <line x1="160" y1="100" x2="190" y2="100" stroke="#c0161f" stroke-width="1.5"/>
+      <polygon points="100,55 110,80 100,75 90,80" fill="#c0161f"/>
+      <polygon points="100,145 110,120 100,125 90,120" fill="#c0161f"/>
+      <circle cx="100" cy="100" r="8" fill="#c0161f"/>
+      <circle cx="100" cy="100" r="4" fill="#0a0608"/>
+    </svg>
+    <div class="content">
+      <div class="eyebrow">EVE Online · Incursion Fleet</div>
+      <h1 class="title">
+        <span class="dtf">DTF</span>
+        <span class="sub">Down to Fly</span>
+      </h1>
+      <p class="tagline">
+        <span>Highsec Incursions</span>
+        <span class="divider"></span>
+        <span>Marauders · Logistics · Command</span>
+        <span class="divider"></span>
+        <span class="highlight">Sansha's Nation will fall</span>
+      </p>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  function init() {
+    stars = [];
+    for (let i = 0; i < 220; i++) {
+      stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.2+0.1, a: Math.random()*0.6+0.1, phase: Math.random()*Math.PI*2, speed: Math.random()*0.4+0.1 });
+    }
+  }
+  function draw(t) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      const alpha = s.a + Math.sin(t*0.001*s.speed+s.phase)*0.15;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(255,220,225,${Math.max(0.05,alpha)})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', () => { resize(); init(); });
+  resize(); init(); requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>

@@ -13,19 +13,32 @@ import { faHeadset } from "@fortawesome/free-solid-svg-icons";
 import { NavLinks, MobileNavButton, MobileNav } from "./Navigation";
 import { useTranslation } from "react-i18next";
 
+
 const Tlaimage = styled.div`
-  padding 0.5em;
+  padding: 0.5em;
   border-radius: 0 0 20px 20px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
   transition: border-radius 0.1s ease-in-out;
-  @media (max-width: 700px) {
-	  background-size: auto 100%;
-	  border-radius: ${(props) => props.mobileopen && "unset"};
-	  
-    
-  }
   padding-top: 6.5em;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0f080a 0%, #180c10 40%, #100608 100%);
+  border-bottom: 2px solid #c0161f;
+  box-shadow: 0 2px 20px rgba(192,22,31,0.3);
 
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #c0161f, #e8222d, #c0161f, transparent);
+    box-shadow: 0 0 10px rgba(192,22,31,0.6);
+  }
+
+  @media (max-width: 700px) {
+    background-size: auto 100%;
+    border-radius: ${(props) => props.mobileopen && "unset"};
+  }
 `;
 
 const MyProfile = styled(NavLink).attrs((props) => ({
@@ -134,8 +147,17 @@ export function Menu({ onChangeCharacter, theme, setTheme, sticker, setSticker }
     <AuthContext.Consumer>
       {(whoami) => (
         <NavBar>
-          <Tlaimage mobileopen={isOpenMobileView}>
-            <NavBar.Menu>
+        <Tlaimage mobileopen={isOpenMobileView}>
+             {[28665,28661,33472,29990,28659,22442,22468,22474].map((id,i)=>(
+               <img key={id} src={`https://images.evetech.net/types/${id}/render?size=512`} alt=""
+                 style={{position:'absolute',height:'120%',top:'-10%',left:`calc(${i*13.1}% - 3%)`,width:'13.2%',opacity:0.22,filter:'drop-shadow(0 0 14px rgba(192,22,31,0.4))',objectFit:'contain',pointerEvents:'none',zIndex:0}} />
+             ))}
+             <div style={{position:'absolute',top:'0.6em',left:'1em',zIndex:1,pointerEvents:'none'}}>
+             <div style={{fontSize:'10px',fontWeight:600,letterSpacing:'0.3em',textTransform:'uppercase',color:'#e8222d',marginBottom:'4px'}}>— EVE Online · Incursion Fleet</div>
+              <div style={{fontFamily:'Courier New,monospace',fontWeight:900,fontSize:'clamp(22px,4vw,48px)',lineHeight:1,color:'#fff',textShadow:'0 0 20px rgba(192,22,31,0.5)',textTransform:'uppercase'}}>DTF</div>
+              <div style={{fontFamily:'Courier New,monospace',fontSize:'clamp(9px,1.5vw,14px)',fontWeight:700,letterSpacing:'0.12em',color:'#e8222d',textTransform:'uppercase'}}>Down to Fly</div>
+              </div>
+              <NavBar.Menu>
               <NavBar.Main>
                 <NavLinks whoami={whoami} />
               </NavBar.Main>
@@ -179,7 +201,7 @@ export function Menu({ onChangeCharacter, theme, setTheme, sticker, setSticker }
                     <MobileNavButton isOpen={isOpenMobileView} setIsOpen={setOpenMobileView} />
                   )}
                   <Mumble />
-                  <AButtonAlt title="Discord" href="https://discord.gg/RpyY9jazpp">
+                  <AButtonAlt title="Discord" href="https://discord.gg/BcDw7acf79">
                     <FontAwesomeIcon icon={faDiscord} />
                   </AButtonAlt>
                   <LanguageSelect />

@@ -421,7 +421,7 @@ export function XCard({ entry, fit, onAction }) {
       }
     >
       <XCardDOM.Head>
-        <span>{accountName}</span>
+        <span>{accountName}{entry.approved_alt_count > 0 && authContext.access["waitlist-view"] ? ` (${entry.approved_alt_count} DPS alts)` : ""}</span>
         <XCardDOM.Head.Badges>
           {tagImages}
           {approvalFlag}

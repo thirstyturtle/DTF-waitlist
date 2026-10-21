@@ -1,7 +1,6 @@
 // SRP character count calculation utility
 // Based on the payment tables in backend/src/data/srp.rs
 
-// Daily payment amounts (in millions) mapped to character count
 const DAILY_PAYMENTS = [
   { amount: 20, characters: 1 },
   { amount: 35, characters: 2 },
@@ -12,23 +11,33 @@ const DAILY_PAYMENTS = [
   { amount: 65, characters: 7 },
   { amount: 70, characters: 8 },
   { amount: 75, characters: 9 },
-  { amount: 80, characters: 10 }
+  { amount: 80, characters: 10 },
+  { amount: 85, characters: 11 },
+  { amount: 90, characters: 12 },
+  { amount: 95, characters: 13 },
 ];
 
-// Per focus payment amounts (in millions) mapped to character count
 const PER_FOCUS_PAYMENTS = [
-  { amount: 125, characters: 1 },
-  { amount: 225, characters: 2 },
-  { amount: 295, characters: 3 },
-  { amount: 330, characters: 4 },
-  { amount: 365, characters: 5 },
-  { amount: 400, characters: 6 },
-  { amount: 435, characters: 7 },
-  { amount: 470, characters: 8 },
-  { amount: 505, characters: 9 },
-  { amount: 540, characters: 10 },
-  { amount: 600, characters: 11 },
-  { amount: 680, characters: 12 }
+  { amount: 100, characters: 1 },
+  { amount: 175, characters: 2 },
+  { amount: 225, characters: 3 },
+  { amount: 250, characters: 4 },
+  { amount: 275, characters: 5 },
+  { amount: 300, characters: 6 },
+  { amount: 325, characters: 7 },
+  { amount: 350, characters: 8 },
+  { amount: 375, characters: 9 },
+  { amount: 400, characters: 10 },
+  { amount: 425, characters: 11 },
+  { amount: 450, characters: 12 },
+  { amount: 475, characters: 13 },
+  { amount: 500, characters: 14 },
+  { amount: 525, characters: 15 },
+  { amount: 550, characters: 16 },
+  { amount: 575, characters: 17 },
+  { amount: 600, characters: 18 },
+  { amount: 625, characters: 19 },
+  { amount: 650, characters: 20 }
 ];
 
 /**

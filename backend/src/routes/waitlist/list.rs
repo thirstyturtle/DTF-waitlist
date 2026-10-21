@@ -29,6 +29,7 @@ struct WaitlistEntry {
     joined_at: i64,
     can_remove: bool,
     waitlist_note: Option<String>,
+    approved_alt_count: i32,
 }
 
 #[derive(Debug, Serialize)]
@@ -96,7 +97,8 @@ async fn list(
                 char_we.name char_we_name,
                 fitting.dna fitting_dna,
                 fitting.hull fitting_hull,
-                implant_set.implants implant_set_implants
+                implant_set.implants implant_set_implants,
+                char_we.approved_alt_count char_we_approved_alt_count
                 FROM waitlist_entry_fit wef
             JOIN waitlist_entry we ON wef.entry_id = we.id
             JOIN `character` char_wef ON wef.character_id = char_wef.id
@@ -153,6 +155,7 @@ async fn list(
                 joined_at: record.we_joined_at,
                 can_remove: x_is_ours || account.access.contains("waitlist-manage"),
                 waitlist_note: pinned_notes.get(&record.we_account_id).cloned(),
+                approved_alt_count: record.char_we_approved_alt_count,
             });
 
         let tags = vec![];

@@ -21,7 +21,7 @@ export function Legal() {
       <p>
         The source code for wl.doomsdaydirective.online is available under the MIT license. The source code
         and full text for this license can be found{" "}
-        <a href="https://github.com/luna-duclos/tla-waitlist">here</a>.
+        <a href="https://github.com/thirstyturtle/dtf-waitlist/tree/main">here</a>.
       </p>
     </Content>
   );

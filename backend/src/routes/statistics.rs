@@ -450,5 +450,78 @@ async fn statistics(
 }
 
 pub fn routes() -> Vec<rocket::Route> {
-    routes![statistics]
+    routes![statistics, fc_uptime]
+}
+
+#[derive(Serialize)]
+struct FcUptimeEntry {
+    character_id: i64,
+    name: String,
+    fleets_run: i64,
+    total_hours: f64,
+    month_hours: f64,
+    year_hours: f64,
+    first_fleet: Option<i64>,
+    last_fleet: Option<i64>,
+}
+
+#[get("/api/stats/fc_uptime")]
+async fn fc_uptime(
+    app: &rocket::State<Application>,
+    account: AuthenticatedAccount,
+) -> Result<Json<Vec<FcUptimeEntry>>, Madness> {
+    account.require_access("commanders-manage:admin")?;
+
+    let now = chrono::Utc::now().timestamp();
+    let month_ago = now - 30 * 24 * 3600_i64;
+    let year_ago = now - 365 * 24 * 3600_i64;
+
+    #[derive(sqlx::FromRow)]
+    struct Row {
+        character_id: i64,
+        name: String,
+        fleets_run: i64,
+        total_seconds: i64,
+        month_seconds: i64,
+        year_seconds: i64,
+        first_fleet: Option<i64>,
+        last_fleet: Option<i64>,
+    }
+
+    let rows: Vec<Row> = sqlx::query_as(
+        "SELECT
+            main_id as character_id,
+            mc.name,
+            CAST(COUNT(DISTINCT fa.fleet_id) AS SIGNED) as fleets_run,
+            CAST(SUM(fa.last_seen - fa.first_seen) AS SIGNED) as total_seconds,
+            CAST(SUM(CASE WHEN fa.first_seen >= ? THEN fa.last_seen - fa.first_seen ELSE 0 END) AS SIGNED) as month_seconds,
+            CAST(SUM(CASE WHEN fa.first_seen >= ? THEN fa.last_seen - fa.first_seen ELSE 0 END) AS SIGNED) as year_seconds,
+            MIN(fa.first_seen) as first_fleet,
+            MAX(fa.last_seen) as last_fleet
+        FROM fleet_activity fa
+        JOIN (
+            SELECT id, COALESCE(ac.account_id, id) as main_id
+            FROM `character`
+            LEFT JOIN alt_character ac ON ac.alt_id = id
+        ) char_main ON char_main.id = fa.character_id
+        JOIN `character` mc ON mc.id = char_main.main_id
+        WHERE fa.is_boss = 1
+        GROUP BY char_main.main_id, mc.name
+        ORDER BY total_seconds DESC"
+    )
+    .bind(month_ago)
+    .bind(year_ago)
+    .fetch_all(app.get_db())
+    .await?;
+
+    Ok(Json(rows.into_iter().map(|r| FcUptimeEntry {
+        character_id: r.character_id,
+        name: r.name,
+        fleets_run: r.fleets_run,
+        total_hours: r.total_seconds as f64 / 3600.0,
+        month_hours: r.month_seconds as f64 / 3600.0,
+        year_hours: r.year_seconds as f64 / 3600.0,
+        first_fleet: r.first_fleet,
+        last_fleet: r.last_fleet,
+    }).collect()))
 }

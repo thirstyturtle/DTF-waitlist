@@ -118,7 +118,7 @@ export default class App extends React.Component {
                 <Router>
                   <AvailableLanguagesProvider>
                     <Container>
-                      <Menu
+                    <Menu
                       onChangeCharacter={(char) => this.changeCharacter(char)}
                       theme={this.state.theme}
                       setTheme={(newTheme) => {

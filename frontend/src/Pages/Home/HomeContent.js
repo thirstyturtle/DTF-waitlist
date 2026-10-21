@@ -23,7 +23,7 @@ export const ThreeColumn = styled.div`
 
 const introComponents = {
   guideLink: <NavLink to="/guide" />,
-  discordLink: <a href="https://discord.gg/RpyY9jazpp" />, // eslint-disable-line jsx-a11y/anchor-has-content
+  discordLink: <a href="https://discord.gg/BcDw7acf79" />, // eslint-disable-line jsx-a11y/anchor-has-content
   fitsLink: <NavLink to="/fits" />,
   bold: <b />,
 };

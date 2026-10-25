@@ -698,17 +698,19 @@ pub async fn check_srp_validity(
     let now = chrono::Utc::now().timestamp();
 
     // Void per_focus payments that were made before the focus ended
-    let result = sqlx::query!(
-        "UPDATE srp_payments SET 
-         expires_at = ?, 
+    let result = sqlx::query(
+        "UPDATE srp_payments SET
+         expires_at = ?,
          focus_voided_at = ?
-         WHERE focus_voided_at IS NULL 
+         WHERE focus_voided_at IS NULL
          AND coverage_type = 'per_focus'
-         AND payment_date < ?",
-        now,
-        now,
-        focus_end_time
+         AND payment_date < ?
+         AND expires_at > ?",
     )
+    .bind(now)
+    .bind(now)
+    .bind(focus_end_time)
+    .bind(now)
     .execute(app.get_db())
     .await?;
 

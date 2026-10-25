@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { faHeadset } from "@fortawesome/free-solid-svg-icons";
 import { NavLinks, MobileNavButton, MobileNav } from "./Navigation";
+import { SrpBadge } from "../Components/SrpBadge";
 import { useTranslation } from "react-i18next";
 
 
@@ -164,7 +165,8 @@ export function Menu({ onChangeCharacter, theme, setTheme, sticker, setSticker }
               <NavBar.End>
                 {whoami && (
                   <>
-                    <NavBar.Name>
+                    <NavBar.Name style={{ position: "relative" }}>
+                      <SrpBadge characterId={whoami.current.id} />
                       <InputGroupAlt fixed>
                         <MyProfile exact to="/pilot" title="My Profile">
                           <img

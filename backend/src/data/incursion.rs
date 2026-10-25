@@ -58,6 +58,22 @@ pub async fn update_focus_status(
 ) -> Result<(), Madness> {
     let now = chrono::Utc::now().timestamp();
 
+    // The UPDATE below targets the latest row; if the table is empty it silently does nothing.
+    let existing = sqlx::query_scalar::<_, i32>("SELECT id FROM incursion_focus LIMIT 1")
+        .fetch_optional(app.get_db())
+        .await?;
+    if existing.is_none() {
+        sqlx::query(
+            "INSERT INTO incursion_focus (last_check_timestamp, focus_active, created_at, updated_at)
+             VALUES (?, 0, ?, ?)",
+        )
+        .bind(now)
+        .bind(now)
+        .bind(now)
+        .execute(app.get_db())
+        .await?;
+    }
+
     sqlx::query!(
         "UPDATE incursion_focus SET 
          current_focus_constellation_id = ?, 
@@ -137,12 +153,12 @@ pub async fn check_and_update_focus(
         current_focus.as_ref().and_then(|f| f.focus_end_timestamp)
     };
 
-    // Check SRP validity based on focus end
-    crate::data::srp::check_srp_validity(app).await?;
-
     // Update focus status
     let constellation_name = detected_focus.as_ref().map(|(_, name)| name.clone());
     update_focus_status(app, new_constellation_id, constellation_name, new_focus_active, focus_end_timestamp).await?;
+
+    // Check SRP validity now that any focus end has been saved
+    crate::data::srp::check_srp_validity(app).await?;
 
     // Log focus changes
     if current_constellation_id != new_constellation_id {

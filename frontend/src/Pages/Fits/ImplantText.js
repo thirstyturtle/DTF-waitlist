@@ -21,6 +21,7 @@ import {
 //   { item: "LE-1006", note: "+6% ..." }      -> click-to-copy implant + note
 // ---------------------------------------------------------------------------
 
+// ===== ARMOR =====
 const ARMOR_IMPLANTS = [
   { slot: 1, default: [{ item: "High-grade Ascendancy Alpha" }], alternative: [] },
   { slot: 2, default: [{ item: "High-grade Ascendancy Beta" }], alternative: [] },
@@ -82,12 +83,127 @@ const ARMOR_IMPLANTS = [
   },
 ];
 
-// Shield and Booster start as copies of the Armor table - edit them independently.
-const SHIELD_IMPLANTS = JSON.parse(JSON.stringify(ARMOR_IMPLANTS));
-SHIELD_IMPLANTS[9].default = [      { label: "Vargur" },
-      { item: "LP-1006", note: "+6% projectile weapon damage" },      { label: "Kronos" },
-      { item: "LH-1006", note: "+6% hybrid weapon damage" },];
-const BOOSTER_IMPLANTS = JSON.parse(JSON.stringify(ARMOR_IMPLANTS));
+// ===== SHIELD =====
+const SHIELD_IMPLANTS = [
+  { slot: 1, default: [{ item: "High-grade Ascendancy Alpha" }], alternative: [] },
+  { slot: 2, default: [{ item: "High-grade Ascendancy Beta" }], alternative: [] },
+  { slot: 3, default: [{ item: "High-grade Ascendancy Gamma" }], alternative: [] },
+  { slot: 4, default: [{ item: "High-grade Ascendancy Delta" }], alternative: [] },
+  { slot: 5, default: [{ item: "High-grade Ascendancy Epsilon" }], alternative: [] },
+  {
+    slot: 6,
+    default: [{ item: "WS-618", note: "+18% warp speed" }],
+    alternative: [{ item: "High-grade Ascendancy Omega", note: "+21% warp speed" }],
+  },
+  {
+    slot: 7,
+    default: [
+      { label: "Kronos/Paladin/Vindicator" },
+      { item: "Ogdin's Eye", note: "+6% Tracking" },
+      { label: "Vargur" },
+      { item: "TA-706", note: "+6% Falloff" },
+    ],
+    alternative: [
+      { item: "MR-706", note: "+6% Tracking" },
+      { label: "Logi" },
+      { item: "RA-706", note: "-6% Cap use for remote armor reps" },
+    ],
+  },
+  {
+    slot: 8,
+    default: [{ item: "EM-806", note: "+6% Capacitor" }],
+    alternative: [
+      { item: "Zor's Custom Navigation Hyper-Link", note: "+5% MWD/AB Speed" },
+      { label: "Vindicator" },
+      { item: "MR-807", note: "+7% Web range" },
+    ],
+  },
+  {
+    slot: 9,
+    default: [{ item: "RF-906", note: "+6% rate of fire for all turrets" }],
+    alternative: [
+      { item: "Pashan's Turret Customization Mindlink", note: "+7% rate of fire for all turrets" },
+    ],
+  },
+  {
+    slot: 10,
+    default: [
+      { label: "Vargur" },
+      { item: "LP-1006", note: "+6% projectile weapon damage" },
+      { label: "Kronos" },
+      { item: "LH-1006", note: "+6% hybrid weapon damage" },
+    ],
+    alternative: [
+      { label: "Paladin" },
+      { item: "Pashan's Turret Handling Mindlink", note: "+7% energy weapon damage" },
+      { label: "Logi" },
+      { item: "HG-1006", note: "+6% Armor hitpoints" },
+      { item: "HG-1008", note: "+8% Armor hitpoints" },
+    ],
+  },
+];
+
+// ===== BOOSTER =====
+const BOOSTER_IMPLANTS = [
+  { slot: 1, default: [{ item: "High-grade Ascendancy Alpha" }], alternative: [] },
+  { slot: 2, default: [{ item: "High-grade Ascendancy Beta" }], alternative: [] },
+  { slot: 3, default: [{ item: "High-grade Ascendancy Gamma" }], alternative: [] },
+  { slot: 4, default: [{ item: "High-grade Ascendancy Delta" }], alternative: [] },
+  { slot: 5, default: [{ item: "High-grade Ascendancy Epsilon" }], alternative: [] },
+  {
+    slot: 6,
+    default: [{ item: "WS-618", note: "+18% warp speed" }],
+    alternative: [{ item: "High-grade Ascendancy Omega", note: "+21% warp speed" }],
+  },
+  {
+    slot: 7,
+    default: [
+      { label: "Kronos/Paladin/Vindicator" },
+      { item: "Ogdin's Eye", note: "+6% Tracking" },
+      { label: "Vargur" },
+      { item: "TA-706", note: "+6% Falloff" },
+    ],
+    alternative: [
+      { item: "MR-706", note: "+6% Tracking" },
+      { label: "Logi" },
+      { item: "RA-706", note: "-6% Cap use for remote armor reps" },
+    ],
+  },
+  {
+    slot: 8,
+    default: [{ item: "EM-806", note: "+6% Capacitor" }],
+    alternative: [
+      { item: "Zor's Custom Navigation Hyper-Link", note: "+5% MWD/AB Speed" },
+      { label: "Vindicator" },
+      { item: "MR-807", note: "+7% Web range" },
+    ],
+  },
+  {
+    slot: 9,
+    default: [{ item: "RF-906", note: "+6% rate of fire for all turrets" }],
+    alternative: [
+      { item: "Pashan's Turret Customization Mindlink", note: "+7% rate of fire for all turrets" },
+    ],
+  },
+  {
+    slot: 10,
+    default: [
+      { label: "Kronos/Vindicator" },
+      { item: "LH-1006", note: "+6% hybrid weapon damage" },
+      { label: "Paladin" },
+      { item: "LE-1006", note: "+6% energy weapon damage" },
+      { label: "Vargur" },
+      { item: "LP-1006", note: "+6% projectile weapon damage" },
+    ],
+    alternative: [
+      { label: "Paladin" },
+      { item: "Pashan's Turret Handling Mindlink", note: "+7% energy weapon damage" },
+      { label: "Logi" },
+      { item: "HG-1006", note: "+6% Armor hitpoints" },
+      { item: "HG-1008", note: "+8% Armor hitpoints" },
+    ],
+  },
+];
 
 export const IMPLANT_TABLES = {
   Armor: ARMOR_IMPLANTS,

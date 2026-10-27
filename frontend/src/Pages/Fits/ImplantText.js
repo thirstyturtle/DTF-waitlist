@@ -1,4 +1,3 @@
-//import { InfoNote } from "../../Components/NoteBox";
 import { Highlight } from "../../Components/Form";
 import { Copyable } from "../../Components/Copy";
 import { ToastContext } from "../../contexts";
@@ -13,86 +12,143 @@ import {
   Cell,
 } from "../../Components/Table";
 
-export function ImplantTable({ type }) {
+// ---------------------------------------------------------------------------
+// Implant tables, one per Fits tab.
+//
+// Each row is one implant slot with a "default" and an "alternative" column.
+// A column is a list of entries:
+//   { label: "Paladin" }                      -> bold heading ("Paladin:")
+//   { item: "LE-1006", note: "+6% ..." }      -> click-to-copy implant + note
+// ---------------------------------------------------------------------------
+
+const ARMOR_IMPLANTS = [
+  { slot: 1, default: [{ item: "High-grade Ascendancy Alpha" }], alternative: [] },
+  { slot: 2, default: [{ item: "High-grade Ascendancy Beta" }], alternative: [] },
+  { slot: 3, default: [{ item: "High-grade Ascendancy Gamma" }], alternative: [] },
+  { slot: 4, default: [{ item: "High-grade Ascendancy Delta" }], alternative: [] },
+  { slot: 5, default: [{ item: "High-grade Ascendancy Epsilon" }], alternative: [] },
+  {
+    slot: 6,
+    default: [{ item: "WS-618", note: "+18% warp speed" }],
+    alternative: [{ item: "High-grade Ascendancy Omega", note: "+21% warp speed" }],
+  },
+  {
+    slot: 7,
+    default: [
+      { label: "Kronos/Paladin/Vindicator" },
+      { item: "Ogdin's Eye", note: "+6% Tracking" },
+      { label: "Vargur" },
+      { item: "TA-706", note: "+6% Falloff" },
+    ],
+    alternative: [
+      { item: "MR-706", note: "+6% Tracking" },
+      { label: "Logi" },
+      { item: "RA-706", note: "-6% Cap use for remote reps" },
+    ],
+  },
+  {
+    slot: 8,
+    default: [{ item: "EM-806", note: "+6% Capacitor" }],
+    alternative: [
+      { item: "Zor's Custom Navigation Hyper-Link", note: "+5% MWD/AB Speed" },
+      { label: "Vindicator" },
+      { item: "MR-807", note: "+7% Web range" },
+    ],
+  },
+  {
+    slot: 9,
+    default: [{ item: "RF-906", note: "+6% rate of fire for all turrets" }],
+    alternative: [
+      { item: "SS-906", note: "+6% damage for all turrets" },
+      { item: "Pashan's Turret Customization Mindlink", note: "+7% rate of fire for all turrets" },
+    ],
+  },
+  {
+    slot: 10,
+    default: [
+      { label: "Kronos/Vindicator" },
+      { item: "LH-1006", note: "+6% hybrid weapon damage" },
+      { label: "Paladin" },
+      { item: "LE-1006", note: "+6% energy weapon damage" },
+      { label: "Vargur" },
+      { item: "LP-1006", note: "+6% projectile weapon damage" },
+    ],
+    alternative: [
+      { label: "Paladin" },
+      { item: "Pashan's Turret Handling Mindlink", note: "+7% energy weapon damage" },
+      { label: "Logi" },
+      { item: "HG-1006", note: "+6% Armor hitpoints" },
+      { item: "HG-1008", note: "+8% Armor hitpoints" },
+    ],
+  },
+];
+
+// Shield and Booster start as copies of the Armor table - edit them independently.
+const SHIELD_IMPLANTS = JSON.parse(JSON.stringify(ARMOR_IMPLANTS));
+const BOOSTER_IMPLANTS = JSON.parse(JSON.stringify(ARMOR_IMPLANTS));
+
+export const IMPLANT_TABLES = {
+  Armor: ARMOR_IMPLANTS,
+  Shield: SHIELD_IMPLANTS,
+  Booster: BOOSTER_IMPLANTS,
+};
+
+// Tabs without their own table (Advanced, Elite, Other, Antigank, ...) use this one.
+export const DEFAULT_IMPLANT_TIER = "Armor";
+
+export function implantTierFor(tier) {
+  return IMPLANT_TABLES[tier] ? tier : DEFAULT_IMPLANT_TIER;
+}
+
+export function ImplantTable({ tier }) {
   const toastContext = React.useContext(ToastContext);
-  var implants;
-  if (type === "Hybrid") {
-    implants = [
-      "High-grade Amulet Alpha",
-      "High-grade Amulet Beta",
-      "High-grade Amulet Gamma",
-      "High-grade Amulet Delta",
-      "High-grade Amulet Epsilon",
-    ];
-  } else {
-    implants = [
-      "High-grade Ascendancy Alpha",
-      "High-grade Ascendancy Beta",
-      "High-grade Ascendancy Gamma",
-      "High-grade Ascendancy Delta",
-      "High-grade Ascendancy Epsilon",
-    ];
-  }
+  const rows = IMPLANT_TABLES[implantTierFor(tier)];
+
   return (
-    <>
-      {/*<InfoNote>
-        {type === "Hybrid"
-          ? "Hybrid tagged fits require at least Amulet 1 - 5 to be flown."
-: "Required for Elite badge on non implant specific ships."}
-      </InfoNote>*/}
-
-      <Table style={{ width: "100%" }}>
-        <TableHead>
-          <Row>
-            <SmallCellHead></SmallCellHead>
-            <CellHead>DEFAULT</CellHead>
-            <CellHead>ALTERNATIVE</CellHead>
-          </Row>
-        </TableHead>
-        <TableBody>
-          {implants.map((currentValue, index) => (
-            <ImplantAllRow
-              key={index}
-              toast={toastContext}
-              slot={index + 1}
-              implant={currentValue}
-            />
-          ))}
-
-          <Row>
+    <Table style={{ width: "100%" }}>
+      <TableHead>
+        <Row>
+          <SmallCellHead></SmallCellHead>
+          <CellHead>DEFAULT</CellHead>
+          <CellHead>ALTERNATIVE</CellHead>
+        </Row>
+      </TableHead>
+      <TableBody>
+        {rows.map((row) => (
+          <Row key={row.slot}>
             <Cell>
-              <b>Slot 6</b>
+              <b>Slot {row.slot}</b>
             </Cell>
             <Cell>
-              <CopyImplantText toast={toastContext} item={"WS-618"} /> +18% warp speed
+              <ImplantEntries toast={toastContext} entries={row.default} />
             </Cell>
-            {type === "Hybrid" ? (
-              <Cell></Cell>
-            ) : (
-              <Cell>
-                <CopyImplantText toast={toastContext} item={"High-grade Ascendancy Omega"} /> +21% warp speed
-              </Cell>
-            )}
+            <Cell>
+              <ImplantEntries toast={toastContext} entries={row.alternative} />
+            </Cell>
           </Row>
-
-          <HardWires toastContext={toastContext} />
-        </TableBody>
-      </Table>
-    </>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
 
-function ImplantAllRow({ toast, slot, implant }) {
+function ImplantEntries({ toast, entries }) {
   return (
-    <Row>
-      <Cell>
-        <b>Slot {slot}</b>
-      </Cell>
-      <Cell>
-        <CopyImplantText toast={toast} item={implant} />
-      </Cell>
-      <Cell></Cell>
-    </Row>
+    <>
+      {entries.map((entry, index) => (
+        <React.Fragment key={index}>
+          {index > 0 && <br />}
+          {entry.label ? (
+            <b>{entry.label}:</b>
+          ) : (
+            <>
+              <CopyImplantText toast={toast} item={entry.item} />
+              {entry.note ? ` ${entry.note}` : null}
+            </>
+          )}
+        </React.Fragment>
+      ))}
+    </>
   );
 }
 
@@ -105,95 +161,5 @@ function CopyImplantText({ toast, item }) {
     >
       {item}
     </Highlight>
-  );
-}
-
-function HardWires({ toastContext }) {
-  return (
-    <>
-      <Row>
-        <Cell>
-          <b>Slot 7</b>
-        </Cell>
-        <Cell>
-          <b>Kronos/Paladin/Vindicator:</b>
-          <br />
-          <CopyImplantText toast={toastContext} item={"Ogdin's Eye"} /> +6% Tracking
-          <br />
-          <b>Vargur:</b>
-          <br />
-          <CopyImplantText toast={toastContext} item={"TA-706"} /> +6% Falloff
-          <br />
-        </Cell>
-
-        <Cell>
-          <CopyImplantText toast={toastContext} item={"MR-706"} /> +6% Tracking
-          <br />
-          <b>Logi:</b>
-          <br />
-          <CopyImplantText toast={toastContext} item={"RA-706"} /> -6% Cap use for remote reps
-        </Cell>
-      </Row>
-      <Row>
-        <Cell>
-          <b>Slot 8</b>
-        </Cell>
-        <Cell>
-          <CopyImplantText toast={toastContext} item={"EM-806"} /> +6% Capacitor
-        </Cell>
-
-        <Cell>
-          <CopyImplantText toast={toastContext} item={"Zor's Custom Navigation Hyper-Link"} /> +5% MWD/AB Speed
-          <br />
-          <b>Vindicator:</b>
-          <br />
-          <CopyImplantText toast={toastContext} item={"MR-807"} /> +7% Web range
-        </Cell>
-      </Row>
-      <Row>
-        <Cell>
-          <b>Slot 9</b>
-        </Cell>
-        <Cell>
-          <CopyImplantText toast={toastContext} item={"RF-906"} /> +6% rate of fire for all turrets
-        </Cell>
-
-        <Cell>
-          <CopyImplantText toast={toastContext} item={"SS-906"} /> +6% damage for all turrets
-          <br />
-          <CopyImplantText toast={toastContext} item={"Pashan's Turret Customization Mindlink"} /> +7% rate of fire for all turrets
-        </Cell>
-      </Row>
-      <Row>
-        <Cell>
-          <b>Slot 10</b>
-        </Cell>
-        <Cell>
-          <b>Kronos/Vindicator:</b>
-          <br />
-          <CopyImplantText toast={toastContext} item={"LH-1006"} /> +6% hybrid weapon damage
-          <br />
-          <b>Paladin:</b>
-          <br />
-          <CopyImplantText toast={toastContext} item={"LE-1006"} /> +6% energy weapon damage
-          <br />
-          <b>Vargur:</b>
-          <br />
-          <CopyImplantText toast={toastContext} item={"LP-1006"} /> +6% projectile weapon damage
-        </Cell>
-        <Cell>
-          <b>Paladin:</b>
-          <br />
-          <CopyImplantText toast={toastContext} item={"Pashan's Turret Handling Mindlink"} /> +7% energy weapon damage
-          <br />
-          <b>Logi:</b>
-          <br />
-          <CopyImplantText toast={toastContext} item={"HG-1006"} /> +6% Armor hitpoints
-          <br />
-          <CopyImplantText toast={toastContext} item={"HG-1008"} /> +8% Armor hitpoints
-          <br />
-        </Cell>
-      </Row>
-    </>
   );
 }

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import _ from "lodash";
 import { DNADisplay } from "../../Components/FitDisplay";
-import { ImplantTable } from "./ImplantText";
+import { ImplantTable, IMPLANT_TABLES } from "./ImplantText";
 import { Box } from "../../Components/Box";
 import React from "react";
 import { Modal } from "../../Components/Modal";
@@ -230,17 +230,18 @@ function ShipDisplay({ fit, id, note }) {
   );
 }
 
-function ImplantOut() {
+function ImplantOut({ tier }) {
+  const name = IMPLANT_TABLES[tier] ? `${tier} Implants` : "Implants";
   return (
     <>
       <DisplayDOM style={{ justifyContent: "initial" }}>
-        <ImplantButton name="Implants" img={wbadge} />
+        <ImplantButton name={name} tier={tier} img={wbadge} />
       </DisplayDOM>
     </>
   );
 }
 
-function ImplantButton({ name, img }) {
+function ImplantButton({ name, tier, img }) {
   const [modalOpen, setModalOpen] = React.useState(false);
   return (
     <>
@@ -257,7 +258,7 @@ function ImplantButton({ name, img }) {
             </BadgeModal>
             <br />
             <br />
-            <ImplantTable type={name} />
+            <ImplantTable tier={tier} />
           </Box>
         </Modal>
       ) : null}

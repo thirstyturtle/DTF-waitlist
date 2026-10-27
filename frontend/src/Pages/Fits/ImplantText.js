@@ -43,7 +43,7 @@ const ARMOR_IMPLANTS = [
     alternative: [
       { item: "MR-706", note: "+6% Tracking" },
       { label: "Logi" },
-      { item: "RA-706", note: "-6% Cap use for remote reps" },
+      { item: "RA-706", note: "-6% Cap use for remote armor reps" },
     ],
   },
   {
@@ -59,7 +59,6 @@ const ARMOR_IMPLANTS = [
     slot: 9,
     default: [{ item: "RF-906", note: "+6% rate of fire for all turrets" }],
     alternative: [
-      { item: "SS-906", note: "+6% damage for all turrets" },
       { item: "Pashan's Turret Customization Mindlink", note: "+7% rate of fire for all turrets" },
     ],
   },
@@ -85,6 +84,9 @@ const ARMOR_IMPLANTS = [
 
 // Shield and Booster start as copies of the Armor table - edit them independently.
 const SHIELD_IMPLANTS = JSON.parse(JSON.stringify(ARMOR_IMPLANTS));
+SHIELD_IMPLANTS[9].default = [      { label: "Vargur" },
+      { item: "LP-1006", note: "+6% projectile weapon damage" },      { label: "Kronos" },
+      { item: "LH-1006", note: "+6% hybrid weapon damage" },];
 const BOOSTER_IMPLANTS = JSON.parse(JSON.stringify(ARMOR_IMPLANTS));
 
 export const IMPLANT_TABLES = {

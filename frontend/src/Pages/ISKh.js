@@ -381,7 +381,7 @@ function buildStats(d) {
   const hasV2 = d.payoutCount !== undefined;
   const rows = [];
   if (hasV2) {
-    rows.push(["of characters", (d.payoutCount / d.sites).toFixed(3)]);
+    rows.push(["number of characters", (d.payoutCount / d.sites).toFixed(3)]);
     rows.push(["box speed", `${fmtIsk((d.isk - d.firstSiteTotal) / hours)} isk/h (without lp)`]);
     rows.push(["box income", `${fmtIsk(d.isk)} isk`]);
     rows.push(["fleet speed", `${fmtIsk((d.fleetIncome - d.firstSitePayout) / hours)} isk/h (without lp)`]);

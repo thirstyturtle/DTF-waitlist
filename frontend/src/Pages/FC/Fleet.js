@@ -50,15 +50,17 @@ export function Fleet() {
         <InputGroup>
           <NavButton to="/auth/start/fc">ESI re-auth as FC</NavButton>
         </InputGroup>
-        <InputGroup>
-          <Button variant="success" onClick={() => toaster(toastContext, setWaitlistOpen(1, true))}>
-            Open waitlist
-          </Button>
-          <Button onClick={() => toaster(toastContext, setWaitlistOpen(1, false))}>
-            Close waitlist
-          </Button>
-          <Button onClick={() => setEmptyWaitlistModalOpen(true)}>Empty waitlist</Button>
-        </InputGroup>
+        {authContext.access["waitlist-edit"] && (
+          <InputGroup>
+            <Button variant="success" onClick={() => toaster(toastContext, setWaitlistOpen(1, true))}>
+              Open waitlist
+            </Button>
+            <Button onClick={() => toaster(toastContext, setWaitlistOpen(1, false))}>
+              Close waitlist
+            </Button>
+            <Button onClick={() => setEmptyWaitlistModalOpen(true)}>Empty waitlist</Button>
+          </InputGroup>
+        )}
         <InputGroup>
           <Button variant="danger" onClick={() => setFleetCloseModalOpen(true)}>
             Kick everyone from fleet

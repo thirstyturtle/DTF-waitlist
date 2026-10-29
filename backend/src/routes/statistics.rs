@@ -470,7 +470,7 @@ async fn fc_uptime(
     app: &rocket::State<Application>,
     account: AuthenticatedAccount,
 ) -> Result<Json<Vec<FcUptimeEntry>>, Madness> {
-    account.require_access("commanders-manage:admin")?;
+    account.require_access("fc-uptime-view")?;
 
     let now = chrono::Utc::now().timestamp();
     let month_ago = now - 30 * 24 * 3600_i64;

@@ -161,7 +161,7 @@ export function Routes() {
         <AuthenticatedRoute component={<Statistics />} access="stats-view" />
       </Route>
       <Route exact path="/fc/fc-uptime">
-        <AuthenticatedRoute component={<FCUptime />} access="stats-view" />
+        <AuthenticatedRoute component={<FCUptime />} access="fc-uptime-view" />
       </Route>
       <Route exact path="/fc/:guideName">
         <GuideFCRoute />

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { roleLabel } from "../../../Util/roles";
 import styled from "styled-components";
 import { apiCall, errorToaster, toaster, useApi } from "../../../api";
 import { Box } from "../../../Components/Box";
@@ -156,7 +157,7 @@ const CmdrModal = ({ character, currentRole, isRevokeable, isOpen, handleRefresh
             >
               {options.map((role, key) => (
                 <option value={role} key={key}>
-                  {role}
+                  {roleLabel(role)}
                 </option>
               ))}
             </Select>

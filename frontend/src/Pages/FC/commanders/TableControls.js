@@ -11,6 +11,7 @@ import { Title } from "../../../Components/Page";
 import PilotSearch from "../../../Components/PilotSearch";
 import { addToast } from "../../../Components/Toast";
 import { AuthContext, ToastContext } from "../../../contexts";
+import { roleLabel } from "../../../Util/roles";
 
 const FormGroup = styled.div`
   margin: 15px 0px;
@@ -112,7 +113,7 @@ const AddButton = ({ refreshData }) => {
                 {options?.map((role, key) => {
                   return (
                     <option value={role} key={key}>
-                      {role}
+                      {roleLabel(role)}
                     </option>
                   );
                 })}
@@ -172,7 +173,7 @@ const FilterComponents = ({ filters, filterOptions, onChange, onClear }) => {
         <option value={-1}>any role...</option>
         {filterOptions?.map((opt, key) => (
           <option value={opt.name} key={key}>
-            {opt.name} ({opt?.member_count?.toLocaleString()})
+            {roleLabel(opt.name)} ({opt?.member_count?.toLocaleString()})
           </option>
         ))}
       </Select>
@@ -228,7 +229,7 @@ const RevokeButton = (props) => {
     return (
       <Modal open={isOpen} setOpen={setOpen}>
         <Box>
-          <Title>Revoke {role}</Title>
+          <Title>Revoke {roleLabel(role)}</Title>
 
           <P>
             From: <CharacterName {...character} noLink avatar={false} />

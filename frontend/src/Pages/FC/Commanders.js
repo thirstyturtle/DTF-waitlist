@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { roleLabel } from "../../Util/roles";
 import styled from "styled-components";
 import Table from "../../Components/DataTable";
 import { useApi } from "../../api";
@@ -108,7 +109,7 @@ const CommandersPage = () => {
       name: "Role",
       sortable: true,
       grow: 2,
-      selector: (row) => row.role,
+      selector: (row) => roleLabel(row.role),
     },
     {
       name: "Granted By",

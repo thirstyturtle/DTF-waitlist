@@ -112,20 +112,20 @@ export function FCMenu() {
           );
         })}
         {authContext && authContext.access["stats-view"] && (
-          <>
-            <CardMargin>
-              <NavLink style={{ textDecoration: "inherit", color: "inherit" }} exact to="/fc/stats">
-                <Card title={<><FontAwesomeIcon fixedWidth icon={faChartLine} /> Statistics</>}>
-                </Card>
-              </NavLink>
-            </CardMargin>
-            <CardMargin>
-              <NavLink style={{ textDecoration: "inherit", color: "inherit" }} exact to="/fc/fc-uptime">
-                <Card title={<><FontAwesomeIcon fixedWidth icon={faChartLine} /> FC Uptime</>}>
-                </Card>
-              </NavLink>
-            </CardMargin>
-          </>
+          <CardMargin>
+            <NavLink style={{ textDecoration: "inherit", color: "inherit" }} exact to="/fc/stats">
+              <Card title={<><FontAwesomeIcon fixedWidth icon={faChartLine} /> Statistics</>}>
+              </Card>
+            </NavLink>
+          </CardMargin>
+        )}
+        {authContext && authContext.access["fc-uptime-view"] && (
+          <CardMargin>
+            <NavLink style={{ textDecoration: "inherit", color: "inherit" }} exact to="/fc/fc-uptime">
+              <Card title={<><FontAwesomeIcon fixedWidth icon={faChartLine} /> FC Uptime</>}>
+              </Card>
+            </NavLink>
+          </CardMargin>
         )}
       </CardArray>
     </>

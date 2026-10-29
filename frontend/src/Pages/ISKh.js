@@ -397,6 +397,7 @@ function buildStats(d) {
   rows.push(["average site", fmtDur(duration / (d.sites - 1))]);
   rows.push(["worst site", fmtDur(d.maxTime)]);
   rows.push(["total sites", `${d.sites}`]);
+  rows.push(["total lp", `${fmtIsk(d.lp)} lp`]);
   rows.push(["log start", fmtStart(d.startTime)]);
   if (hasV2) {
     rows.push(["payout max", `${fmtIsk(d.payoutMax)} isk`]);

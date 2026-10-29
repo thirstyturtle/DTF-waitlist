@@ -7,7 +7,7 @@ import { PageTitle } from "../Components/Page";
 import { Copyable } from "../Components/Copy";
 import { ToastContext } from "../contexts";
 import { useLocation } from "react-router";
-import { formatDatetime, formatDuration } from "../Util/time";
+import { formatDatetime } from "../Util/time";
 import { formatNumber } from "../Util/number";
 import _ from "lodash";
 import styled from "styled-components";
@@ -57,7 +57,7 @@ function decodeString1(encoded) {
 
 function encodeData(input) {
   return (
-    "1" +
+    "2" +
     encodeArray([
       input.isk,
       input.lp,
@@ -68,6 +68,11 @@ function encodeData(input) {
       input.maxTime,
       input.chars,
       input.firstSitePayout,
+      input.payoutCount,
+      input.firstSiteTotal,
+      input.fleetIncome,
+      input.payoutMin,
+      input.payoutMax,
     ])
   );
 }
@@ -85,6 +90,24 @@ function decodeData(encoded) {
       maxTime: numbers[6],
       chars: numbers[7],
       firstSitePayout: numbers[8] || 31500000,
+    };
+  } else if (encoded[0] === "2") {
+    const n = decodeString1(encoded.slice(1));
+    return {
+      isk: n[0],
+      lp: n[1],
+      sites: n[2],
+      startTime: n[3],
+      endTime: n[3] + n[4],
+      minTime: n[5],
+      maxTime: n[6],
+      chars: n[7],
+      firstSitePayout: n[8],
+      payoutCount: n[9],
+      firstSiteTotal: n[10],
+      fleetIncome: n[11],
+      payoutMin: n[12],
+      payoutMax: n[13],
     };
   } else {
     throw new Error("Cannot decode input");
@@ -201,6 +224,15 @@ function parseWallet(input) {
   if (siteTimes.length < 1) {
     return null;
   }
+  // Group payouts by completion time: one timestamp = one site
+  const bySite = _.groupBy(result.raw, "time");
+  const siteKeys = Object.keys(bySite).map(Number).sort((a, b) => a - b);
+  result.payoutCount = result.raw.length;
+  result.firstSiteTotal = _.sumBy(bySite[siteKeys[0]], "isk");
+  result.fleetIncome = _.sum(siteKeys.map((k) => _.maxBy(bySite[k], "isk").isk));
+  result.payoutMin = _.minBy(result.raw, "isk").isk;
+  result.payoutMax = _.maxBy(result.raw, "isk").isk;
+
   result.minTime = Math.min(...siteTimes);
   result.maxTime = Math.max(...siteTimes);
   result.startTime = Math.min(...result.raw.map((row) => row.time));
@@ -306,7 +338,7 @@ const ResultDOM = styled.div`
       border: 0;
       margin-top: 0.75em;
     }
-    p:last-child {
+    p.link {
       border-top: solid 1px ${props.theme.colors.accent3};
       font-size: 0.8em;
       margin-top: 1em;
@@ -324,6 +356,69 @@ const ResultDOM = styled.div`
   `}
 `;
 
+function fmtIsk(n) {
+  return Math.floor(n)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
+function fmtDur(totalSeconds) {
+  const t = Math.round(totalSeconds);
+  const h = Math.floor(t / 3600);
+  const m = Math.floor((t % 3600) / 60);
+  const sec = t % 60;
+  return h > 0 ? `${h}h ${m}m ${sec}s` : `${m}m ${sec}s`;
+}
+
+function fmtStart(unixSeconds) {
+  // EVE time (UTC), e.g. 2026-10-27 00:08
+  return new Date(unixSeconds * 1000).toISOString().slice(0, 16).replace("T", " ");
+}
+
+function buildStats(d) {
+  const duration = d.endTime - d.startTime;
+  const hours = duration / 3600;
+  const hasV2 = d.payoutCount !== undefined;
+  const rows = [];
+  if (hasV2) {
+    rows.push(["of characters", (d.payoutCount / d.sites).toFixed(3)]);
+    rows.push(["box speed", `${fmtIsk((d.isk - d.firstSiteTotal) / hours)} isk/h (without lp)`]);
+    rows.push(["box income", `${fmtIsk(d.isk)} isk`]);
+    rows.push(["fleet speed", `${fmtIsk((d.fleetIncome - d.firstSitePayout) / hours)} isk/h (without lp)`]);
+    rows.push(["fleet income", `${fmtIsk(d.fleetIncome)} isk`]);
+  } else {
+    // Old share link: only the box figures were stored
+    rows.push(["max characters", `${d.chars}`]);
+    rows.push(["box speed", `${fmtIsk((d.isk - d.firstSitePayout) / hours)} isk/h (without lp)`]);
+    rows.push(["box income", `${fmtIsk(d.isk)} isk`]);
+  }
+  rows.push(["measured time", fmtDur(duration)]);
+  rows.push(["best site", fmtDur(d.minTime)]);
+  rows.push(["average site", fmtDur(duration / (d.sites - 1))]);
+  rows.push(["worst site", fmtDur(d.maxTime)]);
+  rows.push(["total sites", `${d.sites}`]);
+  rows.push(["log start", fmtStart(d.startTime)]);
+  if (hasV2) {
+    rows.push(["payout max", `${fmtIsk(d.payoutMax)} isk`]);
+    rows.push(["payout min", `${fmtIsk(d.payoutMin)} isk`]);
+  }
+  return rows;
+}
+
+const StatsTable = styled.table`
+  font-family: "Courier New", monospace;
+  border-collapse: collapse;
+  margin: 0.5em auto;
+  td {
+    padding: 0.15em 0.75em;
+    text-align: left;
+    white-space: nowrap;
+  }
+  td:first-child {
+    opacity: 0.75;
+  }
+`;
+
 function ResultDisplay({ dataStr }) {
   const toastContext = React.useContext(ToastContext);
   if (!dataStr) {
@@ -336,31 +431,34 @@ function ResultDisplay({ dataStr }) {
     return <em>Failed to load results</em>;
   }
 
-  const duration = decoded.endTime - decoded.startTime;
-  const iskH = Math.round((decoded.isk - decoded.firstSitePayout) / (duration / 3600));
+  const rows = buildStats(decoded);
+  const text = rows.map(([label, value]) => `${label} ${value}`).join("\n");
   const url = window.location.origin + `/isk-h?d=${dataStr}`;
 
   return (
     <>
       <ResultDOM>
-        <h1>{formatNumber(iskH)} ISK/h</h1>
-        <h2>
-          {formatNumber(decoded.isk)} ISK + {formatNumber(decoded.lp)} LP
-        </h2>
-        <hr />
-        <p>{formatNumber(decoded.sites)} sites completed</p>
-        {decoded.chars > 1 && (
-          <p>{formatNumber(decoded.chars)} characters included in payout calculation</p>
-        )}
-        <hr />
-        <p>
-          {formatDuration(decoded.minTime)} ~ {formatDuration(decoded.maxTime)} (average{" "}
-          {formatDuration(Math.round(duration / (decoded.sites - 1)))})
-        </p>
-        <p>
-          {formatDatetime(new Date(decoded.startTime * 1000))} ++ {formatDuration(duration)}
+        <h2 style={{ marginTop: "0.5em" }}>ISK/h results</h2>
+        <StatsTable>
+          <tbody>
+            {rows.map(([label, value]) => (
+              <tr key={label}>
+                <td>{label}</td>
+                <td>{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </StatsTable>
+        <p
+          className="link"
+          onClick={(evt) => {
+            Copyable(toastContext, text);
+          }}
+        >
+          Copy results as text
         </p>
         <p
+          className="link"
           onClick={(evt) => {
             Copyable(toastContext, url);
           }}

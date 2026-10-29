@@ -1,0 +1,38 @@
+# Tiers and individual fits can have notes MarkDown can be used.
+# To add a note give the exact name of the fit, for a tier give the name as seen on the page url
+
+notes:
+  # Tier message
+
+  - name: Shield
+    description: >
+      
+  - name: Armor 
+    description: >
+     
+      
+
+  # Ship specific notes
+
+  - name: DtF_SHIELD_KRONOS
+    description: >
+      DPS 2050 out of bastion
+  - name: DtF_SHIELD_VARGUR
+    description: >
+      DPS 1675 out of bastion
+      Offline tractor beam when not in use
+  - name: DtF_ARMOR_KRONOS
+    description: >
+      DPS 2050 out of bastion
+  - name: DtF_ARMOR_PALADIN
+    description: >
+      DPS 1675 out of bastion
+  - name: DtF_ARMOR_VINDI
+    description: >
+      DPS 2150 Web 94.5% 15.5km Badge
+  - name: DtF_ARMOR_NESTOR
+    description: >
+      Needs to be cap stable with 5 reps running & MWD on
+  - name: DtF_ARMOR_LOKI_MWD
+    description: >
+      Needs to be cap stable with 8 reps running only

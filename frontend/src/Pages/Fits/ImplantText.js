@@ -38,8 +38,6 @@ const ARMOR_IMPLANTS = [
     default: [
       { label: "Kronos/Paladin/Vindicator" },
       { item: "Ogdin's Eye", note: "+6% Tracking" },
-      { label: "Vargur" },
-      { item: "TA-706", note: "+6% Falloff" },
     ],
     alternative: [
       { item: "MR-706", note: "+6% Tracking" },
@@ -70,8 +68,6 @@ const ARMOR_IMPLANTS = [
       { item: "LH-1006", note: "+6% hybrid weapon damage" },
       { label: "Paladin" },
       { item: "LE-1006", note: "+6% energy weapon damage" },
-      { label: "Vargur" },
-      { item: "LP-1006", note: "+6% projectile weapon damage" },
     ],
     alternative: [
       { label: "Paladin" },
@@ -98,15 +94,13 @@ const SHIELD_IMPLANTS = [
   {
     slot: 7,
     default: [
-      { label: "Kronos/Paladin/Vindicator" },
+      { label: "Kronos"},
       { item: "Ogdin's Eye", note: "+6% Tracking" },
       { label: "Vargur" },
       { item: "TA-706", note: "+6% Falloff" },
     ],
     alternative: [
       { item: "MR-706", note: "+6% Tracking" },
-      { label: "Logi" },
-      { item: "RA-706", note: "-6% Cap use for remote armor reps" },
     ],
   },
   {
@@ -114,8 +108,6 @@ const SHIELD_IMPLANTS = [
     default: [{ item: "EM-806", note: "+6% Capacitor" }],
     alternative: [
       { item: "Zor's Custom Navigation Hyper-Link", note: "+5% MWD/AB Speed" },
-      { label: "Vindicator" },
-      { item: "MR-807", note: "+7% Web range" },
     ],
   },
   {
@@ -133,13 +125,7 @@ const SHIELD_IMPLANTS = [
       { label: "Kronos" },
       { item: "LH-1006", note: "+6% hybrid weapon damage" },
     ],
-    alternative: [
-      { label: "Paladin" },
-      { item: "Pashan's Turret Handling Mindlink", note: "+7% energy weapon damage" },
-      { label: "Logi" },
-      { item: "HG-1006", note: "+6% Armor hitpoints" },
-      { item: "HG-1008", note: "+8% Armor hitpoints" },
-    ],
+    alternative: [],
   },
 ];
 
@@ -158,15 +144,8 @@ const BOOSTER_IMPLANTS = [
   {
     slot: 7,
     default: [
-      { label: "Kronos/Paladin/Vindicator" },
-      { item: "Ogdin's Eye", note: "+6% Tracking" },
-      { label: "Vargur" },
-      { item: "TA-706", note: "+6% Falloff" },
     ],
     alternative: [
-      { item: "MR-706", note: "+6% Tracking" },
-      { label: "Logi" },
-      { item: "RA-706", note: "-6% Cap use for remote armor reps" },
     ],
   },
   {
@@ -174,33 +153,25 @@ const BOOSTER_IMPLANTS = [
     default: [{ item: "EM-806", note: "+6% Capacitor" }],
     alternative: [
       { item: "Zor's Custom Navigation Hyper-Link", note: "+5% MWD/AB Speed" },
-      { label: "Vindicator" },
-      { item: "MR-807", note: "+7% Web range" },
     ],
   },
   {
     slot: 9,
-    default: [{ item: "RF-906", note: "+6% rate of fire for all turrets" }],
+    default: [],
     alternative: [
-      { item: "Pashan's Turret Customization Mindlink", note: "+7% rate of fire for all turrets" },
     ],
   },
   {
     slot: 10,
     default: [
-      { label: "Kronos/Vindicator" },
-      { item: "LH-1006", note: "+6% hybrid weapon damage" },
-      { label: "Paladin" },
-      { item: "LE-1006", note: "+6% energy weapon damage" },
-      { label: "Vargur" },
-      { item: "LP-1006", note: "+6% projectile weapon damage" },
+      { label: "Eos" },
+      { item: "Federation Navy Command Mindlink", note: "Armor + Skirmish strength" },
+      { label: "Claymore" },
+      { item: "Republic Fleet Command Mindlink", note: "Shield + Skirmish strength" },
+      { label: "Damnation" },
+      { item: "Guri Malakim Command Mindlink", note: "Info + Skirmish strength" },
     ],
     alternative: [
-      { label: "Paladin" },
-      { item: "Pashan's Turret Handling Mindlink", note: "+7% energy weapon damage" },
-      { label: "Logi" },
-      { item: "HG-1006", note: "+6% Armor hitpoints" },
-      { item: "HG-1008", note: "+8% Armor hitpoints" },
     ],
   },
 ];

@@ -89,7 +89,7 @@ async fn get_approved_alts(
     character_id: i64,
     app: &rocket::State<app::Application>,
 ) -> Result<Json<serde_json::Value>, Madness> {
-    authorize_character(&app.db, &account, character_id, None).await?;
+    authorize_character(&app.db, &account, character_id, Some("pilot-view")).await?;
 
     let character = sqlx::query!(
         "SELECT approved_alt_count FROM `character` WHERE id=?",

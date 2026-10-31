@@ -1,53 +1,101 @@
 import React from "react";
+import styled from "styled-components";
 import { useApi } from "../../api";
-import { Title } from "../../Components/Page";
 import { usePageTitle } from "../../Util/title";
 import { FleetMembers } from "./FleetStats";
 import { FleetPageWaitlist } from "../Waitlist";
 
 const REFRESH_MS = 30000;
 
-// Admin view: every registered fleet with its live member composition (read-only).
+const FleetList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 0.5em;
+`;
+
+const FleetChip = styled.span`
+  padding: 0.3em 0.8em;
+  border-radius: 4px;
+  border: 1px solid ${(props) => props.theme.colors.accent3};
+  background: ${(props) => props.theme.colors.accent1};
+  font-weight: 600;
+  small {
+    font-weight: normal;
+    opacity: 0.65;
+    margin-left: 0.4em;
+  }
+`;
+
+const SideColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+`;
+
+// One fleet's compact stats (same panel as the Waitlist page's "Fleet Stats"), read-only.
+// FleetMembers polls by itself every 15s; if the fleet can't be loaded it hides itself.
+function FleetSide({ fleet }) {
+  const [active, setActive] = React.useState(true);
+  const deactivate = React.useCallback(() => setActive(false), []);
+  if (!active) {
+    return (
+      <div>
+        <b>{fleet.boss.name}</b> <em style={{ opacity: 0.7 }}>— no fleet data (boss not in fleet?)</em>
+      </div>
+    );
+  }
+  return (
+    <div>
+      <b>{fleet.boss.name}</b>
+      <FleetMembers
+        fleetpage={false}
+        setStatTempActive={(v) => !v && deactivate()}
+        characterIdOverride={fleet.boss.id}
+        readOnly
+      />
+    </div>
+  );
+}
+
+// Admin view: active fleets/FCs on top, then the waitlist laid out like the Waitlist page
+// with every fleet's stats in the side column.
 export function AllFleets() {
   usePageTitle("All Fleets");
   const [status, refreshStatus] = useApi("/api/fleet/status");
-  const [tick, setTick] = React.useState(0);
 
   React.useEffect(() => {
-    const timer = setInterval(() => {
-      setTick((t) => t + 1);
-      if (refreshStatus) refreshStatus();
-    }, REFRESH_MS);
+    const timer = setInterval(() => refreshStatus && refreshStatus(), REFRESH_MS);
     return () => clearInterval(timer);
   }, [refreshStatus]);
 
-  if (!status) {
-    return <em>Loading fleets...</em>;
-  }
-  const fleets = status.fleets || [];
+  const fleets = (status && status.fleets) || [];
 
   return (
     <>
-      <Title>All Fleets</Title>
-      <p>
-        {fleets.length} active fleet{fleets.length === 1 ? "" : "s"} · refreshes every{" "}
-        {REFRESH_MS / 1000}s · read-only
-      </p>
-      <Title>Waitlist</Title>
-      <FleetPageWaitlist />
-      <Title style={{ marginTop: "1.5em" }}>Fleets</Title>
-      {fleets.length === 0 && <em>No fleets are registered right now.</em>}
-      {fleets.map((fleet) => (
-        <div
-          key={fleet.id}
-          style={{ marginBottom: "2em", paddingBottom: "1em", borderBottom: "1px solid rgba(128,128,128,0.3)" }}
-        >
-          <h2 style={{ marginBottom: "0.25em" }}>
-            {fleet.boss.name} <span style={{ opacity: 0.6, fontSize: "0.7em" }}>fleet {fleet.id}</span>
-          </h2>
-          <FleetMembers key={`${fleet.id}-${tick}`} characterIdOverride={fleet.boss.id} readOnly />
-        </div>
-      ))}
+      <FleetList>
+        <b>Active fleets:</b>
+        {!status && <em>loading...</em>}
+        {status && fleets.length === 0 && <em>none</em>}
+        {fleets.map((fleet) => (
+          <FleetChip key={fleet.id}>
+            {fleet.boss.name}
+            <small>fleet {fleet.id}</small>
+          </FleetChip>
+        ))}
+      </FleetList>
+      <FleetPageWaitlist
+        side={
+          fleets.length > 0 ? (
+            <SideColumn>
+              {fleets.map((fleet) => (
+                <FleetSide key={fleet.id} fleet={fleet} />
+              ))}
+            </SideColumn>
+          ) : null
+        }
+      />
     </>
   );
 }

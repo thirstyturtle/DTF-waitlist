@@ -329,8 +329,9 @@ export function Waitlist() {
   );
 }
 
-// Live waitlist (Columns view) for the FC Fleet page.
-export function FleetPageWaitlist({ waitlistId = 1 }) {
+// Live waitlist (Columns view) laid out like the Waitlist page; `side` renders in the
+// right-hand column where the Waitlist page shows fleet stats.
+export function FleetPageWaitlist({ waitlistId = 1, side = null }) {
   const authContext = React.useContext(AuthContext);
   const [waitlistData, refreshWaitlist] = useWaitlist(waitlistId);
   const fleetComposition = useFleetComposition();
@@ -338,23 +339,26 @@ export function FleetPageWaitlist({ waitlistId = 1 }) {
   if (!authContext.access["waitlist-view"]) {
     return null;
   }
+  let main;
   if (waitlistData === null) {
-    return <em>Loading waitlist...</em>;
-  }
-  if (!waitlistData.open) {
-    return <em>The waitlist is closed.</em>;
+    main = <em>Loading waitlist...</em>;
+  } else if (!waitlistData.open) {
+    main = <em>The waitlist is closed.</em>;
+  } else {
+    main = (
+      <ColumnWaitlist
+        waitlist={waitlistData}
+        onAction={refreshWaitlist}
+        fleetComposition={fleetComposition}
+        authContext={authContext}
+        showMembers={false}
+      />
+    );
   }
   return (
     <CenteredWl>
-      <div style={{ width: "100%" }}>
-        <ColumnWaitlist
-          waitlist={waitlistData}
-          onAction={refreshWaitlist}
-          fleetComposition={fleetComposition}
-          authContext={authContext}
-          showMembers={false}
-        />
-      </div>
+      <WaitlistWrapper>{main}</WaitlistWrapper>
+      {side}
     </CenteredWl>
   );
 }

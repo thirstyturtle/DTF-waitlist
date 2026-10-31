@@ -1,6 +1,4 @@
 {
-  "language": "Language",
-  "legal": "Legal",
   "welcomeTitle": "Welcome to DtF",
   "intro": "Please have a read of the <guideLink>GUIDES</guideLink>, join the <discordLink>DISCORD</discordLink> & in game channel DtF Incursions to ask any questions that aren't answered here, we're more than happy to help. Look at our <fitsLink>FITS</fitsLink> and make sure your fit matches ours. The associated DPS number is expected after roughly 2 weeks of flying with us, DPS requirements must be met <bold>WITHOUT DRUGS & DRONES, GUN DAMAGE ONLY</bold>.",
   "whatIsTlaTitle": "What Is DtF?",
@@ -10,12 +8,14 @@
   "faqTitle": "FAQ'S",
   "faqFitQuestion": "My fit is different to the one on the website. Can I bring it?",
   "faqFitAnswer": "No. Follow the posted fit. If you think you are an exception to the rule DM kocicek.",
-  "faqAmuletQuestion": "Can I use Amulet+WS-618 pods?",
-  "faqAmuletAnswer": "No. It's not 2021 anymore. Fix yo shit.",
   "faqDpsQuestion": "What is the DPS requirement?",
   "faqDpsAnswer": "The DPS requirement is the amount of DPS each pilot is expected to reach in their respective hulls (guns only, no heat, no drugs, no drones) after 24 in fleet hours. A combination of Skills, Abyssals, and Implants are needed to achieve these numbers.",
   "faqLogiQuestion": "I dont have the L badge, can I still fly logi?",
   "faqLogiAnswer": "Yes as long as it meets the posted requirements for that ship under fittings.",
   "faqVindiQuestion": "Can I bring my Vindicator?",
-  "faqVindiAnswer": "Our Vindicator spots are limited but yes. You will be required to DDD so please read the <dddLink>DDD GUIDE</dddLink>."
+  "faqVindiAnswer": "Our Vindicator spots are limited but yes. You will be required to DDD (shoot frigates, anchor correctly. i'll write a guide at some point.)",
+  "language": "Language",
+  "legal": "Legal",
+  "faqAmuletQuestion": "Can I use Amulet+WS-618 pods?",
+  "faqAmuletAnswer": "No. It's not 2021 anymore. Fix yo shit."
 }

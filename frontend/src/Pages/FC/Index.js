@@ -14,6 +14,7 @@ import {
   faDatabase,
   faBiohazard,
   faGraduationCap,
+  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { usePageTitle } from "../../Util/title";
 import { guidePath, useGuides } from "../Guide/useGuides";
@@ -115,6 +116,14 @@ export function FCMenu() {
           <CardMargin>
             <NavLink style={{ textDecoration: "inherit", color: "inherit" }} exact to="/fc/stats">
               <Card title={<><FontAwesomeIcon fixedWidth icon={faChartLine} /> Statistics</>}>
+              </Card>
+            </NavLink>
+          </CardMargin>
+        )}
+        {authContext && authContext.access["commanders-manage:admin"] && (
+          <CardMargin>
+            <NavLink style={{ textDecoration: "inherit", color: "inherit" }} exact to="/fc/all-fleets">
+              <Card title={<><FontAwesomeIcon fixedWidth icon={faUsers} /> All Fleets</>}>
               </Card>
             </NavLink>
           </CardMargin>

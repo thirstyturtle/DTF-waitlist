@@ -1289,7 +1289,7 @@ async fn fleet_composition(
     character_id: i64,
 ) -> Result<Json<FleetCompResponse>, Madness> {
     account.require_access("fleet-view")?;
-    authorize_character(app.get_db(), &account, character_id, None).await?;
+    authorize_character(app.get_db(), &account, character_id, Some("commanders-manage:admin")).await?;
     let fleet_id = get_current_fleet_id(app, character_id).await?;
     let fleet = match sqlx::query!("SELECT boss_id FROM fleet WHERE id = ?", fleet_id)
         .fetch_optional(app.get_db())

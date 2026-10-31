@@ -437,12 +437,12 @@ function RoleAssignments({ roleAssignments }) {
   );
 }
 
-export function FleetMembers({ fleetpage = true, setStatTempActive = null }) {
+export function FleetMembers({ fleetpage = true, setStatTempActive = null, characterIdOverride = null, readOnly = false }) {
   const authContext = React.useContext(AuthContext);
   const toastContext = React.useContext(ToastContext);
   const [fleetCompositionInfo, setFleetCompositionInfo] = React.useState(null);
   const [errorCount, setErrorCount] = React.useState(0);
-  const characterId = authContext.current.id;
+  const characterId = characterIdOverride || authContext.current.id;
   
   // Context menu state
   const [contextMenuOpen, setContextMenuOpen] = React.useState(false);
@@ -658,7 +658,7 @@ export function FleetMembers({ fleetpage = true, setStatTempActive = null }) {
                       squadname={squad.name}
                       members={squad.members}
                       warnActive={squadIndex > 2 && wingIndex === 0}
-                      onCharacterRightClick={handleCharacterRightClick}
+                      onCharacterRightClick={readOnly ? null : handleCharacterRightClick}
                     />
                   ))}
                 </React.Fragment>

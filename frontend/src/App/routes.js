@@ -19,6 +19,7 @@ import { Search } from "../Pages/FC/Search";
 import { Skills } from "../Pages/Skills/Skills";
 import { Statistics } from "../Pages/FC/Statistics";
 import { FCUptime } from "../Pages/FC/FCUptime";
+import { AllFleets } from "../Pages/FC/AllFleets";
 import { Waitlist } from "../Pages/Waitlist";
 import { Xup } from "../Pages/Xup";
 import { Home } from "../Pages/Home";
@@ -159,6 +160,9 @@ export function Routes() {
       </Route>
       <Route exact path="/fc/stats">
         <AuthenticatedRoute component={<Statistics />} access="stats-view" />
+      </Route>
+      <Route exact path="/fc/all-fleets">
+        <AuthenticatedRoute component={<AllFleets />} access="commanders-manage:admin" />
       </Route>
       <Route exact path="/fc/fc-uptime">
         <AuthenticatedRoute component={<FCUptime />} access="fc-uptime-view" />

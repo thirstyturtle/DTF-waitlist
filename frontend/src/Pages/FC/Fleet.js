@@ -2,12 +2,11 @@ import React from "react";
 import { AuthContext, ToastContext } from "../../contexts";
 import { Confirm } from "../../Components/Modal";
 import { Button, Buttons, InputGroup, NavButton, Select } from "../../Components/Form";
-import { Content, Title } from "../../Components/Page";
+import { Content } from "../../Components/Page";
 import { apiCall, errorToaster, toaster, useApi } from "../../api";
 import { usePageTitle } from "../../Util/title";
 import fleetcomp from "./fleetcomp.png";
 import { FleetMembers } from "./FleetStats";
-import { FleetPageWaitlist } from "../Waitlist";
 
 async function setWaitlistOpen(waitlistId, isOpen) {
   return await apiCall("/api/waitlist/set_open", {
@@ -92,12 +91,6 @@ export function Fleet() {
             <NavButton to="/fc/fleet/history">Fleet comp history</NavButton>
           </InputGroup>
         </Buttons>
-      )}
-      {authContext.access["waitlist-view"] && (
-        <>
-          <Title>Waitlist</Title>
-          <FleetPageWaitlist />
-        </>
       )}
       <FleetMembers />
       <Confirm

@@ -3,6 +3,7 @@ import { useApi } from "../../api";
 import { Title } from "../../Components/Page";
 import { usePageTitle } from "../../Util/title";
 import { FleetMembers } from "./FleetStats";
+import { FleetPageWaitlist } from "../Waitlist";
 
 const REFRESH_MS = 30000;
 
@@ -32,6 +33,9 @@ export function AllFleets() {
         {fleets.length} active fleet{fleets.length === 1 ? "" : "s"} · refreshes every{" "}
         {REFRESH_MS / 1000}s · read-only
       </p>
+      <Title>Waitlist</Title>
+      <FleetPageWaitlist />
+      <Title style={{ marginTop: "1.5em" }}>Fleets</Title>
       {fleets.length === 0 && <em>No fleets are registered right now.</em>}
       {fleets.map((fleet) => (
         <div

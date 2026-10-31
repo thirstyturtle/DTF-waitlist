@@ -205,6 +205,7 @@ fn build_access_levels() -> BTreeMap<String, BTreeSet<String>> {
             "stats-view",
             "waitlist-tag:HQ-FC",
             "notes-add",
+            "fleets-view-all",
         ],
     );
     build_level(

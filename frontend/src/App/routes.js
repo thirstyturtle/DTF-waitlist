@@ -162,7 +162,7 @@ export function Routes() {
         <AuthenticatedRoute component={<Statistics />} access="stats-view" />
       </Route>
       <Route exact path="/fc/all-fleets">
-        <AuthenticatedRoute component={<AllFleets />} access="commanders-manage:admin" />
+        <AuthenticatedRoute component={<AllFleets />} access="fleets-view-all" />
       </Route>
       <Route exact path="/fc/fc-uptime">
         <AuthenticatedRoute component={<FCUptime />} access="fc-uptime-view" />

@@ -120,7 +120,7 @@ export function FCMenu() {
             </NavLink>
           </CardMargin>
         )}
-        {authContext && authContext.access["commanders-manage:admin"] && (
+        {authContext && authContext.access["fleets-view-all"] && (
           <CardMargin>
             <NavLink style={{ textDecoration: "inherit", color: "inherit" }} exact to="/fc/all-fleets">
               <Card title={<><FontAwesomeIcon fixedWidth icon={faUsers} /> All Fleets</>}>

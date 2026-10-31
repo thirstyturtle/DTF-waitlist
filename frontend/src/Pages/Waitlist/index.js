@@ -328,3 +328,33 @@ export function Waitlist() {
     </>
   );
 }
+
+// Live waitlist (Columns view) for the FC Fleet page.
+export function FleetPageWaitlist({ waitlistId = 1 }) {
+  const authContext = React.useContext(AuthContext);
+  const [waitlistData, refreshWaitlist] = useWaitlist(waitlistId);
+  const fleetComposition = useFleetComposition();
+
+  if (!authContext.access["waitlist-view"]) {
+    return null;
+  }
+  if (waitlistData === null) {
+    return <em>Loading waitlist...</em>;
+  }
+  if (!waitlistData.open) {
+    return <em>The waitlist is closed.</em>;
+  }
+  return (
+    <CenteredWl>
+      <div style={{ width: "100%" }}>
+        <ColumnWaitlist
+          waitlist={waitlistData}
+          onAction={refreshWaitlist}
+          fleetComposition={fleetComposition}
+          authContext={authContext}
+          showMembers={false}
+        />
+      </div>
+    </CenteredWl>
+  );
+}

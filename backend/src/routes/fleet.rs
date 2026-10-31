@@ -1653,7 +1653,7 @@ async fn update_motd(
     input: Json<UpdateMotdRequest>,
 ) -> Result<Json<UpdateMotdResponse>, Madness> {
     account.require_access("fleet-configure")?;
-    authorize_character(app.get_db(), &account, input.character_id, None).await?;
+    authorize_character(app.get_db(), &account, input.character_id, Some("fleets-view-all")).await?;
     
     let fleet_id = get_current_fleet_id(app, input.character_id).await?;
     let fleet = match sqlx::query!("SELECT boss_id FROM fleet WHERE id = ?", fleet_id)

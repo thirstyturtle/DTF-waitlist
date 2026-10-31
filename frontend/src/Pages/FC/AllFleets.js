@@ -34,7 +34,8 @@ const SideColumn = styled.div`
   gap: 1em;
 `;
 
-// One fleet's compact stats (same panel as the Waitlist page's "Fleet Stats"), read-only.
+// One fleet's compact stats (same panel as the Waitlist page's "Fleet Stats"); right-click a
+// member to assign a MOTD role in that fleet.
 // FleetMembers polls by itself every 15s; if the fleet can't be loaded it hides itself.
 function FleetSide({ fleet }) {
   const [active, setActive] = React.useState(true);
@@ -53,7 +54,6 @@ function FleetSide({ fleet }) {
         fleetpage={false}
         setStatTempActive={(v) => !v && deactivate()}
         characterIdOverride={fleet.boss.id}
-        readOnly
       />
     </div>
   );

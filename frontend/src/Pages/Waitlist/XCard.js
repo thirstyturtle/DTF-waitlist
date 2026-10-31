@@ -1,6 +1,6 @@
 import React, { useReducer } from "react";
 import styled, { ThemeContext } from "styled-components";
-import { ToastContext, AuthContext } from "../../contexts";
+import { ToastContext, AuthContext, InviteTargetContext } from "../../contexts";
 import { apiCall, useApi, errorToaster } from "../../api";
 import { NavLink } from "react-router-dom";
 import { TimeDisplay } from "./TimeDisplay.js";
@@ -381,6 +381,7 @@ function PilotInformation({ characterId, authContext, id }) {
 
 export function XCard({ entry, fit, onAction }) {
   const authContext = React.useContext(AuthContext);
+  const inviteTarget = React.useContext(InviteTargetContext);
   const toastContext = React.useContext(ToastContext);
   const is_alt = fit.is_alt;
   const accountName = entry.character ? entry.character.name : "Name hidden";
@@ -508,7 +509,7 @@ export function XCard({ entry, fit, onAction }) {
             </a>
           )}
           {authContext.access["fleet-invite"] && fit.approved && (
-            <InviteButton fitId={fit.id} fcId={authContext.current.id} onAction={onAction} />
+            <InviteButton fitId={fit.id} fcId={inviteTarget || authContext.current.id} onAction={onAction} />
           )}
           {authContext.access["waitlist-manage"] && !fit.approved && (
             <a

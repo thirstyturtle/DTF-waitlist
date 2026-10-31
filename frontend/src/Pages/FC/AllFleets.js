@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useApi } from "../../api";
+import { AuthContext, InviteTargetContext } from "../../contexts";
 import { usePageTitle } from "../../Util/title";
 import { FleetMembers } from "./FleetStats";
 import { FleetPageWaitlist } from "../Waitlist";
@@ -15,12 +16,18 @@ const FleetList = styled.div`
   margin-bottom: 0.5em;
 `;
 
-const FleetChip = styled.span`
+const FleetChip = styled.button`
   padding: 0.3em 0.8em;
   border-radius: 4px;
-  border: 1px solid ${(props) => props.theme.colors.accent3};
+  border: 1px solid
+    ${(props) => (props.selected ? props.theme.colors.success.color : props.theme.colors.accent3)};
+  box-shadow: ${(props) =>
+    props.selected ? `0 0 0 1px ${props.theme.colors.success.color}` : "none"};
   background: ${(props) => props.theme.colors.accent1};
+  color: inherit;
+  font: inherit;
   font-weight: 600;
+  cursor: pointer;
   small {
     font-weight: normal;
     opacity: 0.65;
@@ -43,7 +50,8 @@ function FleetSide({ fleet }) {
   if (!active) {
     return (
       <div>
-        <b>{fleet.boss.name}</b> <em style={{ opacity: 0.7 }}>— no fleet data (boss not in fleet?)</em>
+        <b>{fleet.boss.name}</b>{" "}
+        <em style={{ opacity: 0.7 }}>— no fleet data (boss not in fleet?)</em>
       </div>
     );
   }
@@ -63,7 +71,9 @@ function FleetSide({ fleet }) {
 // with every fleet's stats in the side column.
 export function AllFleets() {
   usePageTitle("All Fleets");
+  const authContext = React.useContext(AuthContext);
   const [status, refreshStatus] = useApi("/api/fleet/status");
+  const [inviteTarget, setInviteTarget] = React.useState(null);
 
   React.useEffect(() => {
     const timer = setInterval(() => refreshStatus && refreshStatus(), REFRESH_MS);
@@ -72,30 +82,52 @@ export function AllFleets() {
 
   const fleets = (status && status.fleets) || [];
 
+  // Invites go to the selected fleet. Default: your own fleet if you're a boss, else the first one.
+  const bossIds = fleets.map((f) => f.boss.id);
+  const target = bossIds.includes(inviteTarget)
+    ? inviteTarget
+    : bossIds.includes(authContext.current.id)
+    ? authContext.current.id
+    : bossIds[0] || null;
+  const targetFleet = fleets.find((f) => f.boss.id === target);
+
   return (
     <>
       <FleetList>
-        <b>Active fleets:</b>
+        <b>Invite into:</b>
         {!status && <em>loading...</em>}
         {status && fleets.length === 0 && <em>none</em>}
         {fleets.map((fleet) => (
-          <FleetChip key={fleet.id}>
+          <FleetChip
+            key={fleet.id}
+            selected={fleet.boss.id === target}
+            title="Click to send waitlist invites into this fleet"
+            onClick={() => setInviteTarget(fleet.boss.id)}
+          >
+            {fleet.boss.id === target ? "✓ " : ""}
             {fleet.boss.name}
             <small>fleet {fleet.id}</small>
           </FleetChip>
         ))}
       </FleetList>
-      <FleetPageWaitlist
-        side={
-          fleets.length > 0 ? (
-            <SideColumn>
-              {fleets.map((fleet) => (
-                <FleetSide key={fleet.id} fleet={fleet} />
-              ))}
-            </SideColumn>
-          ) : null
-        }
-      />
+      {targetFleet && (
+        <p style={{ margin: "0 0 0.5em", opacity: 0.8 }}>
+          Invite buttons below send pilots into <b>{targetFleet.boss.name}</b>&apos;s fleet.
+        </p>
+      )}
+      <InviteTargetContext.Provider value={target}>
+        <FleetPageWaitlist
+          side={
+            fleets.length > 0 ? (
+              <SideColumn>
+                {fleets.map((fleet) => (
+                  <FleetSide key={fleet.id} fleet={fleet} />
+                ))}
+              </SideColumn>
+            ) : null
+          }
+        />
+      </InviteTargetContext.Provider>
     </>
   );
 }

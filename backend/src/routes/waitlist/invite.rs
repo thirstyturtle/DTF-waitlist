@@ -25,7 +25,7 @@ async fn invite(
     input: Json<InviteRequest>,
 ) -> Result<&'static str, Madness> {
     account.require_access("fleet-invite")?;
-    authorize_character(app.get_db(), &account, input.character_id, None).await?;
+    authorize_character(app.get_db(), &account, input.character_id, Some("fleets-view-all")).await?;
     let xup = sqlx::query!(
         "
             SELECT

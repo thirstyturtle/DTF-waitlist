@@ -33,7 +33,7 @@ async fn remove_fit(
         app.get_db(),
         &account,
         waitlist_entry.account_id,
-        Some("waitlist-manage"),
+        Some("waitlist-review"),
     )
     .await?;
 
@@ -87,7 +87,7 @@ async fn remove_x(
         app.get_db(),
         &account,
         entry.account_id,
-        Some("waitlist-manage"),
+        Some("waitlist-review"),
     )
     .await?;
 

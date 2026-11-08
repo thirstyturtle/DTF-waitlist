@@ -153,7 +153,7 @@ async fn list(
                     None
                 },
                 joined_at: record.we_joined_at,
-                can_remove: x_is_ours || account.access.contains("waitlist-manage"),
+                can_remove: x_is_ours || account.access.contains("waitlist-review"),
                 waitlist_note: pinned_notes.get(&record.we_account_id).cloned(),
                 approved_alt_count: record.char_we_approved_alt_count,
             });

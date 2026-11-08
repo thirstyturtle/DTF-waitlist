@@ -155,9 +155,9 @@ function ShipDisplay({ fit, onAction }) {
         {modalOpen ? (
           <Modal open={true} setOpen={setModalOpen}>
             <Box>
-              {(authContext.access["waitlist-approve"] || authContext.access["waitlist-manage"]) && (
+              {authContext.access["waitlist-review"] && (
                 <Buttons style={{ marginBlock: "1em", marginTop: "0px" }}>
-                  {authContext.access["waitlist-approve"] && (
+                  {authContext.access["waitlist-review"] && (
                     <Button
                       variant="success"
                       style={{ minWidth: "95px" }}
@@ -170,7 +170,7 @@ function ShipDisplay({ fit, onAction }) {
                     </Button>
                   )}
 
-                  {authContext.access["waitlist-manage"] && (
+                  {authContext.access["waitlist-review"] && (
                   <Button
                     variant="danger"
                     style={{ minWidth: "95px" }}
@@ -497,7 +497,7 @@ export function XCard({ entry, fit, onAction }) {
           {_.isFinite(fit.hours_in_fleet) ? (
             <span title="Hours in fleet">{fit.hours_in_fleet}h</span>
           ) : null}
-          {authContext.access["waitlist-manage"] && (
+          {authContext.access["waitlist-review"] && (
             <a
               title="Reject"
               onClick={(evt) => {
@@ -515,7 +515,7 @@ export function XCard({ entry, fit, onAction }) {
           {authContext.access["fleet-invite"] && fit.approved && (
             <InviteButton fitId={fit.id} fcId={inviteTarget || authContext.current.id} onAction={onAction} />
           )}
-          {authContext.access["waitlist-approve"] && !fit.approved && (
+          {authContext.access["waitlist-review"] && !fit.approved && (
             <a
               title="Approve"
               onClick={(evt) => errorToaster(toastContext, approveFit(fit.id)).then(onAction)}

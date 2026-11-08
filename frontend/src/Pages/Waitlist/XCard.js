@@ -155,19 +155,22 @@ function ShipDisplay({ fit, onAction }) {
         {modalOpen ? (
           <Modal open={true} setOpen={setModalOpen}>
             <Box>
-              {authContext.access["waitlist-manage"] && (
+              {(authContext.access["waitlist-approve"] || authContext.access["waitlist-manage"]) && (
                 <Buttons style={{ marginBlock: "1em", marginTop: "0px" }}>
-                  <Button
-                    variant="success"
-                    style={{ minWidth: "95px" }}
-                    onClick={(evt) => {
-                      setModalOpen(false);
-                      errorToaster(toastContext, approveFit(fit.id)).then(onAction);
-                    }}
-                  >
-                    Approve
-                  </Button>
+                  {authContext.access["waitlist-approve"] && (
+                    <Button
+                      variant="success"
+                      style={{ minWidth: "95px" }}
+                      onClick={(evt) => {
+                        setModalOpen(false);
+                        errorToaster(toastContext, approveFit(fit.id)).then(onAction);
+                      }}
+                    >
+                      Approve
+                    </Button>
+                  )}
 
+                  {authContext.access["waitlist-manage"] && (
                   <Button
                     variant="danger"
                     style={{ minWidth: "95px" }}
@@ -185,6 +188,7 @@ function ShipDisplay({ fit, onAction }) {
                   >
                     Reject
                   </Button>
+                  )}
                 </Buttons>
               )}
 
@@ -511,7 +515,7 @@ export function XCard({ entry, fit, onAction }) {
           {authContext.access["fleet-invite"] && fit.approved && (
             <InviteButton fitId={fit.id} fcId={inviteTarget || authContext.current.id} onAction={onAction} />
           )}
-          {authContext.access["waitlist-manage"] && !fit.approved && (
+          {authContext.access["waitlist-approve"] && !fit.approved && (
             <a
               title="Approve"
               onClick={(evt) => errorToaster(toastContext, approveFit(fit.id)).then(onAction)}

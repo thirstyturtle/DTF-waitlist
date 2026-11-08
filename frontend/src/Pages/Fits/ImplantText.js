@@ -41,7 +41,7 @@ const ARMOR_IMPLANTS = [
     ],
     alternative: [
       { item: "MR-706", note: "+6% Tracking" },
-      { label: "Logi" },
+      { label: "Nestor" },
       { item: "RA-706", note: "-6% Cap use for remote armor reps" },
     ],
   },

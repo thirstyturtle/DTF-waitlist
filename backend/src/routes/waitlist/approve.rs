@@ -14,7 +14,7 @@ async fn approve_fit(
     account: AuthenticatedAccount,
     input: Json<ApproveRequest>,
 ) -> Result<&'static str, Madness> {
-    account.require_access("waitlist-manage")?;
+    account.require_access("waitlist-approve")?;
 
     let entry = sqlx::query!(
         "

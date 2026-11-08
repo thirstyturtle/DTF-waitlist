@@ -182,13 +182,14 @@ fn build_access_levels() -> BTreeMap<String, BTreeSet<String>> {
             "waitlist-tag:TRAINEE",
             "fc-uptime-view",
             "waitlist-approve",
+            "fit-view",
         ],
     );
     build_level(
         &mut result,
         "trainee",
         "trainee-advanced",
-        vec!["fit-view", "skill-view", "waitlist-manage", "waitlist-edit", "notes-view"],
+        vec!["skill-view", "waitlist-manage", "waitlist-edit", "notes-view"],
     );
     build_level(
         &mut result,

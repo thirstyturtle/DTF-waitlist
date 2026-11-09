@@ -18,7 +18,7 @@ async fn remove_fit(
     app: &rocket::State<Application>,
     input: Json<RemoveFitRequest>,
 ) -> Result<&'static str, Madness> {
-    let waitlist_entry = sqlx::query!(
+    let waitlist_entry = match sqlx::query!(
         "
             SELECT account_id, entry_id, waitlist_id FROM waitlist_entry_fit wef
             JOIN waitlist_entry we ON wef.entry_id=we.id
@@ -26,8 +26,14 @@ async fn remove_fit(
         ",
         input.id
     )
-    .fetch_one(app.get_db())
-    .await?;
+    .fetch_optional(app.get_db())
+    .await?
+    {
+        Some(row) => row,
+        // Already invited/approved/removed (double click, or the pilot left the
+        // waitlist meanwhile) - nothing left to do, so don't show an error.
+        None => return Ok("OK"),
+    };
 
     authorize_character(
         app.get_db(),
@@ -76,12 +82,18 @@ async fn remove_x(
     account: AuthenticatedAccount,
     input: Json<RemoveXRequest>,
 ) -> Result<&'static str, Madness> {
-    let entry = sqlx::query!(
+    let entry = match sqlx::query!(
         "SELECT id, waitlist_id, account_id FROM waitlist_entry WHERE id=?",
         input.id
     )
-    .fetch_one(app.get_db())
-    .await?;
+    .fetch_optional(app.get_db())
+    .await?
+    {
+        Some(row) => row,
+        // Already invited/approved/removed (double click, or the pilot left the
+        // waitlist meanwhile) - nothing left to do, so don't show an error.
+        None => return Ok("OK"),
+    };
 
     authorize_character(
         app.get_db(),

@@ -16,15 +16,21 @@ async fn approve_fit(
 ) -> Result<&'static str, Madness> {
     account.require_access("waitlist-review")?;
 
-    let entry = sqlx::query!(
+    let entry = match sqlx::query!(
         "
             SELECT entry_id, waitlist_id FROM waitlist_entry_fit wef
             JOIN waitlist_entry we ON we.id=wef.entry_id WHERE wef.id=?
         ",
         input.id
     )
-    .fetch_one(app.get_db())
-    .await?;
+    .fetch_optional(app.get_db())
+    .await?
+    {
+        Some(row) => row,
+        // Already invited/approved/removed (double click, or the pilot left the
+        // waitlist meanwhile) - nothing left to do, so don't show an error.
+        None => return Ok("OK"),
+    };
 
     sqlx::query!(
         "UPDATE waitlist_entry_fit SET approved=1 WHERE id=?",
@@ -52,15 +58,21 @@ async fn reject_fit(
 ) -> Result<&'static str, Madness> {
     account.require_access("waitlist-review")?;
 
-    let entry = sqlx::query!(
+    let entry = match sqlx::query!(
         "
             SELECT entry_id, waitlist_id FROM waitlist_entry_fit wef
             JOIN waitlist_entry we ON we.id=wef.entry_id WHERE wef.id=?
         ",
         input.id
     )
-    .fetch_one(app.get_db())
-    .await?;
+    .fetch_optional(app.get_db())
+    .await?
+    {
+        Some(row) => row,
+        // Already invited/approved/removed (double click, or the pilot left the
+        // waitlist meanwhile) - nothing left to do, so don't show an error.
+        None => return Ok("OK"),
+    };
 
     sqlx::query!(
         "UPDATE waitlist_entry_fit SET approved=0, review_comment=? WHERE id=?",

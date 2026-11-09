@@ -26,7 +26,7 @@ async fn invite(
 ) -> Result<&'static str, Madness> {
     account.require_access("fleet-invite")?;
     authorize_character(app.get_db(), &account, input.character_id, Some("fleets-view-all")).await?;
-    let xup = sqlx::query!(
+    let xup = match sqlx::query!(
         "
             SELECT
                 wef.id wef_id,
@@ -43,8 +43,14 @@ async fn invite(
         ",
         input.id
     )
-    .fetch_one(app.get_db())
-    .await?;
+    .fetch_optional(app.get_db())
+    .await?
+    {
+        Some(row) => row,
+        // Already invited/approved/removed (double click, or the pilot left the
+        // waitlist meanwhile) - nothing left to do, so don't show an error.
+        None => return Ok("OK"),
+    };
     // needs to match category.yaml file
     let select_cat = if xup.wef_is_alt > 0 {
         "alt".to_string()
@@ -52,14 +58,14 @@ async fn invite(
         xup.wef_category
     };
     let squad_info = match sqlx::query!(
-        "
-            SELECT fleet_id, squad_id, wing_id FROM fleet
-            JOIN fleet_squad ON fleet.id=fleet_squad.fleet_id
-            WHERE boss_id=? AND category=?
-        ",
-        input.character_id,
-        select_cat,
-    )
+    "
+        SELECT fleet_id, squad_id, wing_id FROM fleet
+        JOIN fleet_squad ON fleet.id=fleet_squad.fleet_id
+        WHERE boss_id=? AND category=?
+    ",
+    input.character_id,
+    select_cat,
+)
     .fetch_optional(app.get_db())
     .await?
     {
@@ -88,9 +94,15 @@ async fn invite(
         )
         .await?;
 
-    let fc = sqlx::query!("SELECT name FROM `character` WHERE id=?", account.id)
-        .fetch_one(app.get_db())
-        .await?;
+    // The invite has already been sent at this point, so a failed name lookup
+    // must not turn into an error message for the FC.
+    let fc_name = sqlx::query!("SELECT name FROM `character` WHERE id=?", account.id)
+        .fetch_optional(app.get_db())
+        .await
+        .ok()
+        .flatten()
+        .map(|r| r.name)
+        .unwrap_or_else(|| "An FC".to_string());
 
     app.sse_client
         .submit(vec![Event::new(
@@ -98,7 +110,7 @@ async fn invite(
             "wakeup",
             format!(
                 "{} has invited your {} to fleet.",
-                fc.name,
+                fc_name,
                 TypeDB::name_of(xup.fitting_hull as TypeID)?
             ),
         )])

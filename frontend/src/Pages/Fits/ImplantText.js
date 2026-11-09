@@ -94,8 +94,6 @@ const SHIELD_IMPLANTS = [
   {
     slot: 7,
     default: [
-      { label: "Kronos"},
-      { item: "Ogdin's Eye", note: "+6% Tracking" },
       { label: "Vargur" },
       { item: "TA-706", note: "+6% Falloff" },
     ],
@@ -122,8 +120,6 @@ const SHIELD_IMPLANTS = [
     default: [
       { label: "Vargur" },
       { item: "LP-1006", note: "+6% projectile weapon damage" },
-      { label: "Kronos" },
-      { item: "LH-1006", note: "+6% hybrid weapon damage" },
     ],
     alternative: [],
   },

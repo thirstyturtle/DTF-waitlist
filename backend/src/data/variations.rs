@@ -141,7 +141,15 @@ impl Builder {
             for tier in group {
                 tier_i += 1;
                 for module in tier {
-                    tiers.insert(TypeDB::id_of(module)?, tier_i);
+                    match TypeDB::id_of(module) {
+                        Ok(id) => {
+                            tiers.insert(id, tier_i);
+                        }
+                        Err(e) => eprintln!(
+                            "WARNING modules.yaml alternatives: unknown item '{}' ({:?}) - skipped",
+                            module, e
+                        ),
+                    }
                 }
             }
             to_merge.push(tiers);
@@ -153,10 +161,17 @@ impl Builder {
     }
     fn add_cargo_ignore(&mut self) -> Result<(), TypeError> {
         for entry in &self.file.cargo_ignore {
-            let id = TypeDB::id_of(entry);
-            println!("cargo_ignore entry: '{}' -> {:?}", entry, id);
-            self.cargo_ignore.insert(id?);
-            self.cargo_ignore.insert(TypeDB::id_of(entry)?);
+            // An unknown name (typo, or an item missing from the SDE) must not take
+            // down every x-up: skip it and log it instead.
+            match TypeDB::id_of(entry) {
+                Ok(id) => {
+                    self.cargo_ignore.insert(id);
+                }
+                Err(e) => eprintln!(
+                    "WARNING modules.yaml cargo_ignore: unknown item '{}' ({:?}) - skipped",
+                    entry, e
+                ),
+            }
         }
         Ok(())
     }
